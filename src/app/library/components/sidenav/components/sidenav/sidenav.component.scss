@@ -1,0 +1,61 @@
+$primary-color: var(--imagine-primary-color);
+
+.item {
+  margin: 0px 20px;
+  margin-bottom: 15px;
+  padding-left: 10px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.item-text {
+  display: flex;
+  gap: 5px;
+}
+
+.item-text em {
+  font-size: 15px;
+}
+
+.sub-items {
+  margin-bottom: 10px;
+}
+
+.sub-items .item {
+  margin: 10px;
+  padding-left: 10px;
+  animation-name: fadeInDown;
+  animation-timing-function: ease-in-out;
+  animation-fill-mode: backwards;
+}
+
+.sub-items .item:first-child {
+  animation-name: fadeIn;
+}
+
+.selected {
+  border-left: 3px solid $primary-color;
+  color: var(--app-primary-color);
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translate3d(0, -50%, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}

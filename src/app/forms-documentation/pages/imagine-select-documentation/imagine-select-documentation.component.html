@@ -1,0 +1,32 @@
+<h1>Select</h1>
+
+<div class="columns-3 gap-20">
+  <div class="margin-top-10">
+    <imagine-select label="No options"></imagine-select>
+  </div>
+  <div class="margin-top-10">
+    <imagine-select label="Options">
+      <imagine-select-option value="option">Option</imagine-select-option>
+    </imagine-select>
+  </div>
+  <div class="margin-top-10">
+    <imagine-select label="End content">
+      <div endContent>
+        <em class="bx bx-error-circle common-icon"></em>
+      </div>
+    </imagine-select>
+  </div>
+  <div class="margin-top-10">
+    <imagine-select label="Start content">
+      <div startContent>
+        <em class="bx bx-error-circle common-icon"></em>
+      </div>
+    </imagine-select>
+  </div>
+  <div class="margin-top-10">
+    <imagine-select label="Multiple" [multiple]="true">
+      <imagine-select-option value="option">Option</imagine-select-option>
+      <imagine-select-option value="option1">Option 1</imagine-select-option>
+    </imagine-select>
+  </div>
+</div>

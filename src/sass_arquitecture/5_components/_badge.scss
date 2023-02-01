@@ -1,0 +1,18 @@
+
+:root{
+  --app-badge-font: 'Rubik', sans-serif;
+}
+
+.badge {
+    padding: 5px;
+    width: 136px;
+    border-radius: 5px;
+    display: flex;
+    gap: 5px;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .badge em {
+    font-size: 20px;
+  }

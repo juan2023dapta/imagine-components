@@ -103,6 +103,16 @@
             ],
             "scripts": []
           }
+        },
+        "deploy": {
+          "builder": "@angular/fire:deploy",
+          "options": {
+            "prerender": false,
+            "ssr": false,
+            "browserTarget": "imagine-lib:build:production",
+            "firebaseProject": "imagine-components",
+            "firebaseHostingSite": "imagine-components"
+          }
         }
       }
     }

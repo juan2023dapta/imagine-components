@@ -1,0 +1,111 @@
+<h1>Input</h1>
+
+<div class="columns-3 gap-20">
+  <div class="margin-top-10">
+    <imagine-input label="Simple input"></imagine-input>
+  </div>
+  <div class="margin-top-10">
+    <imagine-input label="Start content">
+      <div startContent>
+        <em class="bx bx-user common-icon"></em>
+      </div>
+    </imagine-input>
+  </div>
+  <div class="margin-top-10">
+    <imagine-input label="End content">
+      <div endContent>
+        <em class="bx bx-error-circle common-icon"></em>
+      </div>
+    </imagine-input>
+  </div>
+  <div class="margin-top-10">
+    <imagine-input label="Start content - End content">
+      <div startContent>
+        <em class="bx bx-x common-icon"></em>
+      </div>
+      <div endContent>
+        <em class="bx bx-hide common-icon"></em>
+      </div>
+    </imagine-input>
+  </div>
+  <div class="margin-top-10">
+    <imagine-input>
+      <div labelContent class="flex align-items-center gap-10">
+        Custom label
+        <em class="bx bx-error-circle"></em>
+      </div>
+    </imagine-input>
+  </div>
+  <div class="margin-top-10">
+    <imagine-input
+      [formControl]="formControlExample"
+      label="Form control"
+    ></imagine-input>
+  </div>
+  <div class="margin-top-10">
+    <form [formGroup]="formGroupExample">
+      <imagine-input
+        formControlName="formControlNameExample"
+        label="Form group"
+      ></imagine-input>
+    </form>
+  </div>
+  <div class="margin-top-10">
+    <form [formGroup]="formGroupExample">
+      <imagine-input
+        formControlName="customName"
+        label="Custom error message name"
+        fieldName="My custom name!!!"
+      ></imagine-input>
+    </form>
+  </div>
+  <div class="margin-top-10">
+    <form [formGroup]="formGroupExample">
+      <imagine-input
+        formControlName="customErrorMessage"
+        label="Custom error message"
+        [errorMessages]="{
+          required: 'This field is required.'
+        }"
+      ></imagine-input>
+    </form>
+  </div>
+  <div class="margin-top-10">
+    <imagine-input label="Phone" type="phone"></imagine-input>
+  </div>
+  <div class="margin-top-10">
+    <imagine-input label="Currency" type="currency"></imagine-input>
+  </div>
+  <div class="margin-top-10">
+    <imagine-input label="Group number" type="groupNumber"></imagine-input>
+  </div>
+  <div class="margin-top-10">
+    <imagine-input label="Number" type="number"></imagine-input>
+  </div>
+  <div class="margin-top-10">
+    <imagine-input
+      label="Decimal Number"
+      type="number"
+      [decimalSpots]="2"
+    ></imagine-input>
+  </div>
+  <div class="margin-top-10">
+    <imagine-input
+      label="Positive Number"
+      type="positiveNumber"
+    ></imagine-input>
+  </div>
+  <div class="margin-top-10">
+    <imagine-input label="Floating Label" labelType="floating"></imagine-input>
+  </div>
+  <div class="margin-top-10">
+    <imagine-input label="Fixed Label" labelType="fixed"></imagine-input>
+  </div>
+  <div class="margin-top-10">
+    <imagine-input
+      label="Material Input"
+      containerClass="material-input"
+      labelType="floating"
+    ></imagine-input>
+  </div>
+</div>

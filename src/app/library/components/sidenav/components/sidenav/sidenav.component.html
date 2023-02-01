@@ -1,0 +1,27 @@
+<ng-container *ngFor="let route of routes; let i = index">
+  <div
+    [hidden]="route.hidden"
+    class="item"
+    (click)="open(route.link)"
+    [ngClass]="{ selected: route.link === router.url || route.link === actualLink }">
+    <div class="item-text">
+      <em *ngIf="route.checked" class="bx bx-check text-primary"></em>
+      <em *ngIf="route.checked === false" class="bx bxs-error-circle text-danger"></em>
+      <p>{{ route.name }}</p>
+    </div>
+    <div class="sub-items" *ngIf="showSubRoutes && i === currentRouteIndex">
+      <ng-container *ngFor="let subRoute of route.subRoutes; let x = index">
+        <div
+          class="item"
+          [ngClass]="{
+            selected: subRoute.link === router.url || subRoute.link === actualLink || router.url.includes(subRoute.link)
+          }"
+          [ngStyle]="{ 'animation-duration': 0.07 * x + 0.3 + 's' }"
+          (click)="$event.stopPropagation(); navigate(subRoute.link)"
+          [hidden]="subRoute.hidden">
+          {{ subRoute.name }}
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</ng-container>

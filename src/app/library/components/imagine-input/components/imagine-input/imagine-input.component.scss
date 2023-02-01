@@ -1,0 +1,87 @@
+$input-primary-color: var(--imagine-primary-color);
+$input-danger-color: var(--imagine-danger-color);
+$input-grey-color: var(--imagine-grey-color);
+$input-size-height: var(--imagine-input-height);
+$input-label-distance: var(--imagine-label-distance);
+
+:host{
+    position: relative;
+}
+
+@mixin labelUp{
+    transform: translate(0px, -20px);
+    font-size: 14px;
+}
+
+@mixin floatingLabel{
+    position: absolute;
+    padding: 5px;
+    z-index: 4;
+    background-color: white;
+    transform: translateX(7px);
+}
+
+.imagine-input{
+    outline: 1px solid $input-grey-color;
+    border: none;
+    border-radius: 7px;
+    display: flex;
+    width: 100%;
+    height: $input-size-height;
+    align-items: center;
+    &__element{
+        padding: 0 5px;
+        border: none;
+        height: 100%;
+        outline: none;
+        flex-grow: 3;
+        &:focus + .floating-label,
+        &:not(:placeholder-shown) + .floating-label{
+            transition: all 0.1s;
+            @include labelUp();
+        }
+        &:focus + .fixed-label,
+        &:focus + .floating-label{
+            color: $input-primary-color
+        }
+    }
+    .floating-label{
+       @include floatingLabel();
+    }
+    .fixed-label{
+       @include floatingLabel();
+       @include labelUp();
+    }
+}
+
+.content{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.padding-content{
+    padding: 0 2px;
+}
+
+.outline-primary {
+    outline: 2px solid  $input-primary-color;
+}
+
+.outline-danger {
+    outline: 2px solid $input-danger-color;
+}
+
+.color-danger {
+    color: $input-danger-color;
+}
+
+.label-margin{
+    margin-bottom: $input-label-distance;
+}
+
+.error-message{
+    color: $input-danger-color;
+    position: absolute;
+    bottom: -20px;
+}

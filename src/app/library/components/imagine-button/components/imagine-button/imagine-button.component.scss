@@ -1,0 +1,85 @@
+$button-height: var(--imagine-button-height);
+$button-font-size: var(--imagine-button-font-size);
+$button-disabled-color: var(--imagine-button-disabled-color);
+$button-primary-color: var(--imagine-primary-color);
+$button-light-color: var(--imagine-light-color);
+$button-dark-color: var(--imagine-dark-color);
+$button-grey-color: var(--imagine-grey-color);
+$button-danger-color: var(--imagine-danger-color);
+$button-success-color: var(--imagine-success-color);
+$button-warning-color: var(--imagine-warning-color);
+
+.imagine-button {
+    outline: none;
+    border: none;
+    width: 100%;
+    cursor: pointer;
+    display: flex;
+    border-radius: 10px;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Rubik', sans-serif;
+    height: $button-height;
+    font-size: $button-font-size;
+    background-color: $button-primary-color;
+    font-weight: 500;
+    //text colors
+    &--primary-text{
+        color: $button-primary-color;
+    }
+    &--light-text{
+        color: $button-light-color;
+    }
+    &--dark-text{
+        color: $button-dark-color;
+    }
+    &--danger-text{
+        color: $button-danger-color;
+    }
+    &--success-text{
+        color: $button-success-color;
+    }
+    &--warning-text{
+        color: $button-warning-color;
+    }
+    &--grey-text{
+        color: $button-grey-color;
+    }
+    //background colors
+    &--primary{
+        background-color: $button-primary-color;
+        color: $button-light-color;
+    }
+    &--light{
+        background-color: $button-light-color;
+        color: $button-primary-color;
+    }
+    &--dark{
+        background-color: $button-dark-color;
+        color: $button-light-color;
+    }
+    &--danger{
+        background-color: $button-danger-color;
+        color: $button-light-color;
+    }
+    &--success{
+        background-color: $button-success-color;
+        color: $button-light-color;
+    }
+    &--warning{
+        background-color: $button-warning-color;
+        color: $button-light-color;
+    }
+    &--grey{
+        background-color: $button-grey-color;
+        color: $button-light-color;
+    }
+  }
+  
+  .button-hover:hover {
+    opacity: 0.8;
+  }
+  
+  .disabled{
+    background-color: $button-disabled-color;
+  }

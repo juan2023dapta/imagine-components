@@ -1,0 +1,160 @@
+$primary-color: var(--imagine-primary-color);
+
+@mixin flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login{
+    position: relative;
+    height: 100%;
+    background-color: $primary-color;
+    @include flex-center;
+    z-index: 0;
+    &__form{
+     padding: 10px;
+       height: 90%;
+       background-color: white;
+       border-radius: 20px;
+       width: 95%;
+       max-width: 900px;
+       z-index: -2;
+       @include flex-center;
+       flex-direction: column;
+       position: relative;
+
+    }
+    &__title{
+       font-size: 40px;
+       margin-top: 20px;
+       opacity: 0;
+       animation: fadeInUpBig 1s 2s;
+       animation-fill-mode: forwards;
+       margin-bottom: -120px;
+       text-align: center;
+    }
+
+    &__button{
+       position: absolute;
+       bottom: 50px;
+       display: flex;
+       align-items: center;
+       color: white;
+       padding: 20px;
+       border-radius: 10px;
+       height: 20px;
+       font-size: 20px;
+       background-color: $primary-color;;
+       cursor: pointer;
+       opacity: 0;
+       animation: fadeInUpBig 1s 2s;
+       animation-fill-mode: forwards;
+    }
+}
+
+
+.tree{
+    background-color: #635C64;
+    height: 150px;
+    width: 40px;
+    position: relative;
+    animation: tree 1s;
+    animation-fill-mode: forwards;
+    &__up,
+    &__middle,
+    &__down{
+        position: absolute;
+    }
+    &__up{
+        border-radius: 50%;
+        top: 0px;
+        left: 0px;
+        margin-top: -30px;
+        margin-left: -30px;
+        background-color: $primary-color;
+        height: 60px;
+        width: 60px;
+        transform: scale(0);
+        transform-origin: center;
+        box-shadow:
+		$primary-color  65px -15px 0 -5px, 
+		$primary-color  25px -25px, 
+		$primary-color  30px 10px, 
+		$primary-color  60px 15px 0 -10px, 
+		$primary-color  85px 5px 0 -5px;
+        z-index: -1;
+        animation: treeUp 1s 1s;
+        animation-fill-mode: forwards;
+        transform-origin: center;
+        transition: all 1s;
+    }
+    &__middle{
+        width: 0;
+        height: 0;
+        border-style: solid;
+        border-width: 20px 20px 0 20px;
+        border-color: white transparent transparent transparent;
+        top: 0;
+        animation: treeMiddle .1s 1s;
+        animation-fill-mode: forwards;
+    }
+    &__down{
+        background-color: #635C64;
+        bottom: -1px;
+        left: -30px;
+        width: 100px;
+        height: 0;
+        border-radius: 0 2000px 0 0  ;
+        clip-path: polygon(49% 3%, 60% 11%, 70% 70%, 92% 96%, 100% 100%, 50% 100%, 0 100%, 12% 95%, 30% 70%, 39% 13%);
+        animation: treeDown 1s 1s;
+        animation-fill-mode: forwards;
+    }
+}
+
+@keyframes tree {
+    0%{
+        height: 0;
+    }
+    100%{
+        height: 150px;
+    }
+}
+@keyframes treeUp {
+    0%{
+        transform: scale(0);
+    }
+    100%{
+        transform: scale(2.5);
+        left: -80px;
+        top: -60px;
+    }
+}
+@keyframes treeMiddle {
+    0%{
+        border-color: white transparent transparent transparent;
+    }
+    100%{
+        border-color: $primary-color transparent transparent transparent;
+    }
+}
+@keyframes treeDown {
+    0%{
+        height: 0;
+    }
+    100%{
+        height: 70px;
+    }
+}
+
+@keyframes fadeInUpBig {
+    0% {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+  
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }

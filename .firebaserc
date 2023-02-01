@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "imagine-components": {
+      "hosting": {
+        "imagine-lib": [
+          "imagine-components"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "imagine-components"
+  }
+}

@@ -1,0 +1,15 @@
+<div [style.maxWidth]="'1210px'" [style.margin]="'0 auto'">
+  <div class="layout">
+    <div
+      [ngStyle]="{
+        display: 'block'
+      }"
+      class="sidenav-container"
+    >
+      <app-sidenav [routes]="routes"></app-sidenav>
+    </div>
+    <div>
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>
