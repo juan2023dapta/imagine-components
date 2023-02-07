@@ -3,6 +3,8 @@ $input-danger-color: var(--imagine-danger-color);
 $input-grey-color: var(--imagine-grey-color);
 $input-size-height: var(--imagine-input-height);
 $input-label-distance: var(--imagine-label-distance);
+$input-font-family: var(--imagine-input-font-family);
+$input-font-size: var(--imagine-input-font-size);
 
 :host{
     position: relative;
@@ -35,6 +37,8 @@ $input-label-distance: var(--imagine-label-distance);
         height: 100%;
         outline: none;
         flex-grow: 3;
+        font-family: $input-font-family;
+        font-size: $input-font-size;
         &:focus + .floating-label,
         &:not(:placeholder-shown) + .floating-label{
             transition: all 0.1s;
@@ -43,6 +47,32 @@ $input-label-distance: var(--imagine-label-distance);
         &:focus + .fixed-label,
         &:focus + .floating-label{
             color: $input-primary-color
+        }
+        &::-webkit-input-placeholder {
+          font-size: $input-font-size;
+          font-family: $input-font-family;
+        }
+          
+        &:-moz-placeholder {
+          font-size: $input-font-size;
+          font-family: $input-font-family;
+        }
+        &::-moz-placeholder {
+          font-size: $input-font-size;
+          font-family: $input-font-family;
+        }
+        &:-ms-placeholder {
+          font-size: $input-font-size;
+          font-family: $input-font-family;
+        }
+          
+          /* Change the white to any color */
+        &:-webkit-autofill,
+        &:-webkit-autofill:hover, 
+        &:-webkit-autofill:focus, 
+        &:-webkit-autofill:active{
+            -webkit-box-shadow: 0 0 0 30px white inset !important;
+            box-shadow: 0 0 0 30px white inset !important;
         }
     }
     .floating-label{

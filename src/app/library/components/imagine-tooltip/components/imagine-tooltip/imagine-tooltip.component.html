@@ -1,0 +1,30 @@
+<div
+  class="imagine-tooltip-wrapper"
+  (mouseover)="overToolTip()"
+  (mouseleave)="notOverTooltip()"
+>
+  <div class="outside" (click)="openOnClicked($event)">
+    <ng-content select="[outside]"></ng-content>
+  </div>
+  <span
+    (click)="openOnClicked($event)"
+    *ngIf="showTooltip"
+    class="imagine-tooltip"
+    [ngClass]="{
+      tooltipFadeIn: fadeIn,
+      tooltipFadeOut: fadeOut,
+      'imagine-tooltip-origin': showOrigin,
+      'imagine-tooltip-box-shadow': boxShadow
+    }"
+    [ngStyle]="{ left: left, width: width, bottom: bottom, top: top }"
+  >
+    <div
+      [ngStyle]="{
+        'max-height': maxHeightContent,
+        height: heightContent
+      }"
+    >
+      <ng-content select="[inside]"></ng-content>
+    </div>
+  </span>
+</div>

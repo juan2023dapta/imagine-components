@@ -8,6 +8,7 @@ import { ImagineSelectDocumentationComponent } from './pages/imagine-select-docu
 import { ImagineInputModule } from '../library/components/imagine-input/imagine-input.module';
 import { ImagineSelectModule } from '../library/components/imagine-select/imagine-select.module';
 import { ImagineButtonModule } from '../library/components/imagine-button/imagine-button.module';
+import { ImagineTooltipModule } from '../library/components/imagine-tooltip/imagine-tooltip.module';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import { ImagineButtonModule } from '../library/components/imagine-button/imagin
     ImagineSelectModule,
     ReactiveFormsModule,
     ImagineButtonModule,
+    ImagineTooltipModule,
   ],
 })
 export class FormsDocumentationModule {}

@@ -1,0 +1,20 @@
+<span
+  #tooltipContent
+  class="imagine-tooltip"
+  *ngIf="showTooltip"
+  [ngClass]="{
+    tooltipFadeIn: true,
+    'imagine-tooltip-origin': showOrigin,
+    'imagine-tooltip-box-shadow': boxShadow
+  }"
+  [ngStyle]="{ left: left, width: width, top: top }"
+>
+  <div
+    [ngStyle]="{
+      'max-height': maxHeightContent,
+      height: heightContent
+    }"
+  >
+    <ng-content></ng-content>
+  </div>
+</span>

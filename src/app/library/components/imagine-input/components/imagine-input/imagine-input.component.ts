@@ -22,6 +22,8 @@ import {
   NG_VALUE_ACCESSOR,
 } from '@angular/forms';
 import { Subscription } from 'rxjs';
+import { GroupData } from '../../interfaces/group-data.interface';
+import { ImagineInputType } from '../../types/input.type';
 
 @Component({
   selector: 'imagine-input',
@@ -66,7 +68,7 @@ export class ImagineInputComponent
   /**Gets form control in case the form group will not be used*/
   @Input() formControl!: FormControl;
   /**Sets input type */
-  @Input() type = 'text';
+  @Input() type: ImagineInputType = 'text';
   /**Sets input label */
   @Input() label = '';
   /**Sets floating label */
@@ -127,6 +129,10 @@ export class ImagineInputComponent
   @Input() max!: number;
   /**Sets a pattern to match value while the user is writting */
   @Input() pattern = '';
+  /**Sets a mask to format value while the user is writting */
+  @Input() mask = '';
+  /**Sets a mask to format value while the user is writting */
+  @Input() groupData!: GroupData;
   /**Decimal places for number type */
   @Input() decimalSpots = 0;
   /**container class */
@@ -255,7 +261,7 @@ export class ImagineInputComponent
   };
   writeValue(value: any): void {
     this.value = value?.toString() || '';
-    this.verifyNumberFormat();
+    this.verifyFormat();
   }
   registerOnChange(fn: any): void {
     this.onChange = fn;
@@ -272,7 +278,7 @@ export class ImagineInputComponent
     this.blur.emit(event);
     this.isFocused = false;
     this.onTouch();
-    this.verifyNumberFormat();
+    this.verifyFormat();
   }
 
   /**
@@ -332,6 +338,9 @@ export class ImagineInputComponent
     }
     if (this.type === 'phone') {
       this.formatPhone(event);
+    }
+    if (this.type === 'mask') {
+      this.formatMask(event, currentValue);
     }
     this.value = event.target.value;
     this.onChange(this.value);
@@ -414,6 +423,7 @@ export class ImagineInputComponent
 
     this.groupNumber(event);
 
+    //place cursor
     const lengthDifference = event.target.value.length - this.value.length;
 
     this.input.nativeElement.setSelectionRange(
@@ -483,6 +493,144 @@ export class ImagineInputComponent
   }
 
   /**
+   * Formats the value into a mask specified
+   * @param event on input event that contains the value to be formatted
+   */
+  formatMask(event: any, currentValue = '') {
+    const indexesUnreplaceable = this.mask.split('').map((l) => {
+      if (l === '_') {
+        return 'notreplaceable';
+      } else {
+        return l;
+      }
+    });
+    const pattern = this.mask.replace(/n|l|c/g, '_');
+
+    const cleanValue: string = event.target.value
+      .split('')
+      .filter((char: string) => !pattern.includes(char))
+      .join('');
+
+    const cleanValueMask: string = this.mask
+      .split('')
+      .filter((char: string) => !pattern.includes(char))
+      .join('');
+
+    if (!this.checkTypesOnMaskPattern(cleanValue, cleanValueMask)) {
+      event.target.value = currentValue;
+      return event.target.value;
+    }
+
+    const maskCharsToReplace: number[] = [];
+
+    pattern.split('').forEach((char, i) => {
+      if (char === '_' && indexesUnreplaceable[i] !== 'notreplaceable') {
+        maskCharsToReplace.push(i);
+      }
+    });
+
+    const newValue = pattern.split('');
+
+    cleanValue.split('').forEach((char, i) => {
+      newValue[maskCharsToReplace[i]] = char;
+    });
+
+    event.target.value = newValue.join('');
+
+    let position = 0;
+    if (event.inputType == 'deleteContentBackward') {
+      if (this.caretPosition === 1) {
+        position = this.caretPosition;
+      } else {
+        position = this.caretPosition - 1;
+      }
+    } else if (event.inputType == 'insertText') {
+      let lastNormalCharIndex = 0;
+      for (let index = 0; index < newValue.length; index++) {
+        if (cleanValue.includes(newValue[index])) {
+          lastNormalCharIndex = index;
+        }
+      }
+
+      if (this.caretPosition >= lastNormalCharIndex) {
+        position = lastNormalCharIndex + 1;
+      } else {
+        if (pattern.includes(newValue[this.caretPosition])) {
+          let nextNormalCharIndex = 0;
+          for (
+            let index = this.caretPosition;
+            index < newValue.length;
+            index++
+          ) {
+            if (cleanValue.includes(newValue[index])) {
+              nextNormalCharIndex = index;
+              break;
+            }
+          }
+          position = nextNormalCharIndex + 1;
+        } else {
+          position = this.caretPosition + 1;
+        }
+      }
+    }
+
+    this.input?.nativeElement.setSelectionRange(position, position);
+
+    return event.target.value;
+  }
+
+  /**
+   * validates types on mask pattern
+   * @param value value to validate
+   * @return valid if value is valid of type
+   */
+
+  checkTypesOnMaskPattern(value: string, cleanValueMask: string) {
+    if (value === '') {
+      return true;
+    }
+    let valid = false;
+    const type = this.detectTypesOnMaskPattern();
+    if (type === 'alpha' && /^[a-zA-Z]+$/.test(value)) {
+      valid = true;
+    } else if (type === 'numeric' && /^\d+$/.test(value)) {
+      valid = true;
+    } else if (type === 'alphanumeric') {
+      let validChar = true;
+      for (let i = 0; i < value.split('').length; i++) {
+        if (cleanValueMask[i] === 'l' && !/^[a-zA-Z]+$/.test(value[i])) {
+          validChar = false;
+        } else if (cleanValueMask[i] === 'n' && !/^\d+$/.test(value[i])) {
+          validChar = false;
+        }
+        if (!validChar) {
+          break;
+        }
+      }
+      valid = validChar;
+    }
+    return valid;
+  }
+
+  /**
+   * detect mask types
+   * @returns type of mask to know which values accept
+   */
+  detectTypesOnMaskPattern() {
+    let type: 'alpha' | 'numeric' | 'alphanumeric' | '' = '';
+    if (this.mask.match(/n/g)) {
+      type = 'numeric';
+    }
+    if (this.mask.match(/l/g)) {
+      type = 'alpha';
+    }
+    if (this.mask.match(/n/g) && this.mask.match(/l/g)) {
+      type = 'alphanumeric';
+    }
+    return type;
+  }
+
+  /**
    * Formats the number in decimals with or without currency
    * @param value Value to be formatted
    * @param digitsInfo decimal places info
@@ -502,28 +650,45 @@ export class ImagineInputComponent
   }
 
   /**
+   * verify format depending on type
+   */
+  verifyFormat() {
+    if (
+      this.type === 'currency' ||
+      this.type === 'groupNumber' ||
+      this.type === 'number'
+    ) {
+      this.verifyNumberFormat();
+    }
+    if (this.type === 'mask') {
+      this.verifyMask();
+    }
+  }
+
+  /**
    * Formats the number on write value or on blur
    */
   verifyNumberFormat() {
     if (this.value) {
-      if (
-        this.type === 'currency' ||
-        this.type === 'groupNumber' ||
-        this.type === 'number'
-      ) {
-        if (this.type === 'currency' || this.type === 'groupNumber') {
-          this.value = this.groupNumber({ target: { value: this.value } });
-          if (!this.value.includes('.')) {
-            this.value = this.value + '.00';
-          }
-          if (this.value[this.value.length - 1] === '.') {
-            this.value = this.value + '00';
-          }
-        } else {
-          this.value = Number(this.value).toFixed(this.decimalSpots);
+      if (this.type === 'currency' || this.type === 'groupNumber') {
+        this.value = this.groupNumber({ target: { value: this.value } });
+        if (!this.value.includes('.')) {
+          this.value = this.value + '.00';
         }
+        if (this.value[this.value.length - 1] === '.') {
+          this.value = this.value + '00';
+        }
+      } else {
+        this.value = Number(this.value).toFixed(this.decimalSpots);
       }
     }
+  }
+
+  /**
+   * Verify mask if input type is mask
+   */
+  verifyMask() {
+    this.value = this.formatMask({ target: { value: this.value } });
   }
   /**
    * converts date to real date
@@ -540,6 +705,11 @@ export class ImagineInputComponent
       date.getUTCSeconds()
     );
   }
+
+  /**
+   * place caret posiition
+   */
+  placeCursor(lastIndex: number) {}
 
   /**
    * Unsubscribes

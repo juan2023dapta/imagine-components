@@ -1,0 +1,72 @@
+
+$tooltip-font-family: var(--imagine-tooltip-font-size);
+$tooltip-grey-color: var(--imagine-grey-color);
+
+
+.outside{
+  display: inline;
+}
+
+.imagine-tooltip-wrapper {
+  position: relative;
+}
+.imagine-tooltip {
+  font-family: $tooltip-font-family !important;
+  display: inline;
+  cursor: pointer;
+  position: absolute;
+  transform: translateX(-50%);
+  background-color: white;
+  color: black;
+  padding: 7px;
+  border-radius: 7px;
+  z-index: 999;
+  border: 1px solid $tooltip-grey-color;
+  div {
+    overflow-y: auto;
+  }
+  &-box-shadow {
+    box-shadow: rgba(0, 0, 0, 0.3) 0 2px 10px;
+  }
+  &-origin:after {
+    border: 10px solid;
+    border-color: white transparent transparent;
+    content: '';
+    left: 50%;
+    margin-left: -10px;
+    position: absolute;
+    top: 100%;
+    z-index: 999;
+  }
+}
+
+.outside {
+  cursor: pointer;
+}
+
+.tooltipFadeOut {
+  animation: tooltipFadeOut 5s ease-in-out;
+  animation-delay: 2s;
+  animation-fill-mode: forwards;
+}
+
+@keyframes tooltipFadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+.tooltipFadeIn {
+  animation: tooltipFadeIn 0.5s ease-in-out;
+}
+
+@keyframes tooltipFadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}

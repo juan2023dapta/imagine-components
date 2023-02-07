@@ -12,6 +12,7 @@ export class ImagineInputDocumentationComponent implements OnInit {
     formControlNameExample: ['', Validators.required],
     customName: ['', Validators.required],
     customErrorMessage: [10000000, Validators.required],
+    mask: ['', Validators.required],
   });
   constructor(private formBuilder: FormBuilder) {}
 
