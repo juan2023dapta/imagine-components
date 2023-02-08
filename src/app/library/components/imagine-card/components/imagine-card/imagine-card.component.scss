@@ -1,0 +1,12 @@
+$card-border-color: var(--imagine-card-border-color);
+$card-border-radius: var(--imagine-card-border-radius);
+$card-padding: var(--imagine-card-padding);
+$card-background-color: var(--imagine-card-background-color);
+
+
+.imagine-card {
+  border: 1px solid $card-border-color;
+  background-color: $card-background-color;
+  border-radius: $card-border-radius;
+  padding: $card-padding;
+}
