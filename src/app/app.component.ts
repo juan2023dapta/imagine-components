@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component } from '@angular/core';
-import { AlertController } from './library/components/alert/services/alert-controller.service';
+import { ImagineAlertController } from './library/components/imagine-alert/services/imagine-alert-controller.service';
 
 @Component({
   selector: 'app-root',
@@ -9,10 +9,7 @@ import { AlertController } from './library/components/alert/services/alert-contr
 export class AppComponent {
   title = 'imagine-lib';
 
-  constructor(
-    public alertController: AlertController,
-    private changeDetectorRef: ChangeDetectorRef
-  ) {}
+  constructor(public alertController: ImagineAlertController, private changeDetectorRef: ChangeDetectorRef) {}
 
   ngAfterContentChecked(): void {
     this.changeDetectorRef.detectChanges();

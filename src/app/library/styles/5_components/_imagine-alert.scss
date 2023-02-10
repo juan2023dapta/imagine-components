@@ -1,3 +1,15 @@
+:root{
+  --imagine-alert-primary-color: #2B5797;
+  --imagine-alert-secondary-color: #2B5797;
+  --imagine-alert-white-color: #fff;
+  --imagine-alert-gray-color: #CBCDD3;
+  --imagine-alert-dark-color: #777777;
+  --imagine-alert-danger-color: #f54963;
+  --imagine-alert-danger-low-color: #ec687c;
+  --imagine-alert-success-color: #40b872;
+  --imagine-alert-success-low-color: #45dd85;
+}
+
 .alert-ul {
   list-style: disc outside;
   margin-left: 30px;

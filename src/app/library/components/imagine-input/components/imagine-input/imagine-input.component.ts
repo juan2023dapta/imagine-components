@@ -39,9 +39,7 @@ import { ImagineInputType } from '../../types/input.type';
     DecimalPipe,
   ],
 })
-export class ImagineInputComponent
-  implements ControlValueAccessor, AfterViewInit, OnDestroy
-{
+export class ImagineInputComponent implements ControlValueAccessor, AfterViewInit, OnDestroy {
   /**Access to native input element */
   @ViewChild('input') input!: ElementRef<HTMLInputElement>;
   /**Access to the label content container of the input like icons or images */
@@ -114,12 +112,7 @@ export class ImagineInputComponent
   /**Sets input currency symbol to format */
   @Input() currencySymbol = '$';
   /**Sets currency display */
-  @Input() currencyDisplay:
-    | 'code'
-    | 'symbol'
-    | 'symbol-narrow'
-    | string
-    | boolean = 'symbol';
+  @Input() currencyDisplay: 'code' | 'symbol' | 'symbol-narrow' | string | boolean = 'symbol';
   /**Sets country calling code to phone format */
   @Input() countryCallingCode = '';
   /**Sets maxLength to input type text */
@@ -188,9 +181,7 @@ export class ImagineInputComponent
    * access form control
    */
   get inputFormControl() {
-    return this.controlContainer
-      ? this.controlContainer?.control?.get(this.formControlName)
-      : this.formControl;
+    return this.controlContainer ? this.controlContainer?.control?.get(this.formControlName) : this.formControl;
   }
 
   /**
@@ -379,10 +370,7 @@ export class ImagineInputComponent
       if (this.decimalSpots === 0 && event.target.value.includes('.')) {
         event.target.value = currentValue;
       } else {
-        if (
-          event.target.value.split('.')[1] &&
-          event.target.value.split('.')[1].length > this.decimalSpots
-        ) {
+        if (event.target.value.split('.')[1] && event.target.value.split('.')[1].length > this.decimalSpots) {
           event.target.value = currentValue;
         }
       }
@@ -478,14 +466,9 @@ export class ImagineInputComponent
    * @param event on input event that contains the value to be formatted
    */
   formatPhone(event: any) {
-    event.target.value = event.target.value.replace(
-      this.countryCallingCode + ' ',
-      ''
-    );
+    event.target.value = event.target.value.replace(this.countryCallingCode + ' ', '');
     if (event.target.value !== '') {
-      event.target.value = event.target.value
-        .replace(/\D+/g, '')
-        .replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
+      event.target.value = event.target.value.replace(/\D+/g, '').replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
       event.target.value = this.countryCallingCode
         ? this.countryCallingCode + ' ' + event.target.value
         : event.target.value;
@@ -557,11 +540,7 @@ export class ImagineInputComponent
       } else {
         if (pattern.includes(newValue[this.caretPosition])) {
           let nextNormalCharIndex = 0;
-          for (
-            let index = this.caretPosition;
-            index < newValue.length;
-            index++
-          ) {
+          for (let index = this.caretPosition; index < newValue.length; index++) {
             if (cleanValue.includes(newValue[index])) {
               nextNormalCharIndex = index;
               break;
@@ -653,11 +632,7 @@ export class ImagineInputComponent
    * verify format depending on type
    */
   verifyFormat() {
-    if (
-      this.type === 'currency' ||
-      this.type === 'groupNumber' ||
-      this.type === 'number'
-    ) {
+    if (this.type === 'currency' || this.type === 'groupNumber' || this.type === 'number') {
       this.verifyNumberFormat();
     }
     if (this.type === 'mask') {

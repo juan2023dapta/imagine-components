@@ -8,14 +8,12 @@ import {
   OnDestroy,
   OnInit,
 } from '@angular/core';
-import { ImagineTooltipContentComponent } from '../components/imagine-tooltip-content/tooltip-content.component';
+import { ImagineTooltipContentComponent } from '../components/imagine-tooltip-content/imagine-tooltip-content.component';
 
 @Directive({
   selector: '[imagineTooltip]',
 })
-export class ImagineTooltipDirective
-  implements OnInit, AfterViewInit, OnDestroy
-{
+export class ImagineTooltipDirective implements OnInit, AfterViewInit, OnDestroy {
   /**access tooltip content component child element */
   @ContentChild(ImagineTooltipContentComponent)
   tooltipContentComponent!: ImagineTooltipContentComponent;
@@ -73,15 +71,8 @@ export class ImagineTooltipDirective
    * @param event touch event
    */
   onTouchListener = (event: any) => {
-    if (
-      this.tooltipContentComponent &&
-      this.tooltipContentComponent.tooltipContent
-    ) {
-      if (
-        !this.tooltipContentComponent.tooltipContent.nativeElement.contains(
-          event.target
-        )
-      ) {
+    if (this.tooltipContentComponent && this.tooltipContentComponent.tooltipContent) {
+      if (!this.tooltipContentComponent.tooltipContent.nativeElement.contains(event.target)) {
         this.tooltipContentComponent.showTooltip = false;
         this.toggleTouchListener('remove');
       }
@@ -105,15 +96,8 @@ export class ImagineTooltipDirective
    * @param event wheel event
    */
   onWheelListener = (event: any) => {
-    if (
-      this.tooltipContentComponent &&
-      this.tooltipContentComponent.tooltipContent
-    ) {
-      if (
-        !this.tooltipContentComponent.tooltipContent.nativeElement.contains(
-          event.target
-        )
-      ) {
+    if (this.tooltipContentComponent && this.tooltipContentComponent.tooltipContent) {
+      if (!this.tooltipContentComponent.tooltipContent.nativeElement.contains(event.target)) {
         this.tooltipContentComponent.showTooltip = false;
         this.toggleWheelListener('remove');
       }
@@ -161,10 +145,7 @@ export class ImagineTooltipDirective
    * shows tooltip
    */
   showTooltip() {
-    if (
-      !this.tooltipContentComponent ||
-      this.tooltipContentComponent?.showTooltip
-    ) {
+    if (!this.tooltipContentComponent || this.tooltipContentComponent?.showTooltip) {
       return;
     }
     this.toggleListeners('add');
@@ -174,14 +155,12 @@ export class ImagineTooltipDirective
       this.tooltipContentComponent.top =
         rect.top +
         parseInt(this.tooltipContentComponent.moveToBottom) -
-        this.tooltipContentComponent.tooltipContent?.nativeElement
-          .clientHeight +
+        this.tooltipContentComponent.tooltipContent?.nativeElement.clientHeight +
         'px';
       this.tooltipContentComponent.left =
         rect.left +
         parseInt(this.tooltipContentComponent.moveToLeft) -
-        this.tooltipContentComponent.tooltipContent?.nativeElement.clientWidth /
-          2 +
+        this.tooltipContentComponent.tooltipContent?.nativeElement.clientWidth / 2 +
         this.elementRef.nativeElement.clientWidth / 2 +
         'px';
     }, 0);
@@ -192,10 +171,7 @@ export class ImagineTooltipDirective
    * @param data force hide on other components
    */
   hideTooltip(data?: { forceHide: boolean }) {
-    if (
-      !this.tooltipContentComponent ||
-      (!data?.forceHide && this.tooltipContentComponent?.openedOnClick)
-    ) {
+    if (!this.tooltipContentComponent || (!data?.forceHide && this.tooltipContentComponent?.openedOnClick)) {
       return;
     }
     this.toggleListeners('remove');

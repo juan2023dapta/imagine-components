@@ -1,5 +1,3 @@
 <router-outlet></router-outlet>
-<app-alert *ngIf="alertController.showAlert"></app-alert>
-<app-alert-loading
-  *ngIf="alertController.loading || alertController.loadingAux"
-></app-alert-loading>
+<imagine-alert *ngIf="alertController.showAlert"></imagine-alert>
+<imagine-alert-loading *ngIf="alertController.loading || alertController.loadingAux"></imagine-alert-loading>

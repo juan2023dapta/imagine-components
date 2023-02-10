@@ -1,0 +1,9 @@
+<div class="container" *ngIf="showPopUp">
+  <div
+    [class]="'imagine-popup-wrapper ' + animation"
+    [ngStyle]="{maxWidth, maxHeight, width}"
+    #popupContainer
+  >
+    <ng-content></ng-content>
+  </div>
+</div>

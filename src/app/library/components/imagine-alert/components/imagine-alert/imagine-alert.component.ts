@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
-import { AlertController } from '../../services/alert-controller.service';
+import { ImagineAlertController } from '../../services/imagine-alert-controller.service';
 
 @Component({
-  selector: 'app-alert',
-  templateUrl: './alert.component.html',
-  styleUrls: ['./alert.component.scss'],
+  selector: 'imagine-alert',
+  templateUrl: './imagine-alert.component.html',
+  styleUrls: ['./imagine-alert.component.scss'],
 })
-export class AlertComponent {
-  constructor(public alertController: AlertController) {}
+export class ImagineAlertComponent {
+  constructor(public alertController: ImagineAlertController) {}
 }
 
 export interface AlertInfo {

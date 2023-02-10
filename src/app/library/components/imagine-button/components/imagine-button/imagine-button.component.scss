@@ -8,6 +8,10 @@ $button-grey-color: var(--imagine-grey-color);
 $button-danger-color: var(--imagine-danger-color);
 $button-success-color: var(--imagine-success-color);
 $button-warning-color: var(--imagine-warning-color);
+$button-padding: var(--imagine-button-padding);
+$button-font-weight: var(--imagine-button-font-weight);
+$button-border-radius: var(--imagine-button-border-radius);
+$button-font-family: var(--imagine-font-family);
 
 .imagine-button {
     outline: none;
@@ -15,14 +19,15 @@ $button-warning-color: var(--imagine-warning-color);
     width: 100%;
     cursor: pointer;
     display: flex;
-    border-radius: 10px;
+    border-radius: $button-border-radius;
     align-items: center;
     justify-content: center;
     font-family: 'Rubik', sans-serif;
     height: $button-height;
     font-size: $button-font-size;
     background-color: $button-primary-color;
-    font-weight: 500;
+    padding: $button-padding;
+    font-weight: $button-font-weight;
     //text colors
     &--primary-text{
         color: $button-primary-color;

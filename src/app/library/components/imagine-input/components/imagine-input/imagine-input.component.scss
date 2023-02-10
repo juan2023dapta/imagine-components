@@ -1,10 +1,13 @@
 $input-primary-color: var(--imagine-primary-color);
 $input-danger-color: var(--imagine-danger-color);
+$input-text-color: var(--imagine-text-color);
 $input-grey-color: var(--imagine-grey-color);
 $input-size-height: var(--imagine-input-height);
 $input-label-distance: var(--imagine-label-distance);
-$input-font-family: var(--imagine-input-font-family);
+$input-font-family: var(--imagine-font-family);
 $input-font-size: var(--imagine-input-font-size);
+$input-box-shadow-focus: var(--imagine-input-box-shadow-focus);
+
 
 :host{
     position: relative;
@@ -31,7 +34,10 @@ $input-font-size: var(--imagine-input-font-size);
     width: 100%;
     height: $input-size-height;
     align-items: center;
+    transition: box-shadow .1s;
     &__element{
+        border-radius: inherit;
+        color: $input-text-color;
         padding: 0 5px;
         border: none;
         height: 100%;
@@ -84,6 +90,20 @@ $input-font-size: var(--imagine-input-font-size);
     }
 }
 
+.imagine-input[state="invalid"]{
+    outline: 1px solid $input-danger-color;
+    box-shadow: none;
+}
+
+.outline-primary{
+    outline: 1px solid  $input-primary-color;
+    box-shadow: 0 0 0 0.2rem $input-box-shadow-focus;
+}
+
+.outline-primary[state="invalid"]{
+    box-shadow: none;
+}
+
 .content{
     display: flex;
     justify-content: center;
@@ -92,14 +112,6 @@ $input-font-size: var(--imagine-input-font-size);
 
 .padding-content{
     padding: 0 2px;
-}
-
-.outline-primary {
-    outline: 2px solid  $input-primary-color;
-}
-
-.outline-danger {
-    outline: 2px solid $input-danger-color;
 }
 
 .color-danger {

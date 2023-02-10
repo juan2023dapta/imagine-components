@@ -10,6 +10,7 @@
         <em class="bx bx-user common-icon"></em>
       </div>
     </imagine-input>
+    <imagine-button>Hola</imagine-button>
   </div>
   <div class="margin-top-10">
     <imagine-input label="End content">
@@ -25,7 +26,7 @@
       </div>
       <div endContent>
         <em imagineTooltip class="bx bx-hide common-icon">
-          <imagine-tooltip-content> Hola </imagine-tooltip-content>
+          <imagine-tooltip-content>Hola</imagine-tooltip-content>
         </em>
       </div>
     </imagine-input>
@@ -39,17 +40,11 @@
     </imagine-input>
   </div>
   <div class="margin-top-10">
-    <imagine-input
-      [formControl]="formControlExample"
-      label="Form control"
-    ></imagine-input>
+    <imagine-input [formControl]="formControlExample" label="Form control"></imagine-input>
   </div>
   <div class="margin-top-10">
     <form [formGroup]="formGroupExample">
-      <imagine-input
-        formControlName="formControlNameExample"
-        label="Form group"
-      ></imagine-input>
+      <imagine-input formControlName="formControlNameExample" label="Form group"></imagine-input>
     </form>
   </div>
   <div class="margin-top-10">
@@ -57,8 +52,7 @@
       <imagine-input
         formControlName="customName"
         label="Custom error message name"
-        fieldName="My custom name!!!"
-      ></imagine-input>
+        fieldName="My custom name!!!"></imagine-input>
     </form>
   </div>
   <div class="margin-top-10">
@@ -68,8 +62,7 @@
         label="Custom error message"
         [errorMessages]="{
           required: 'This field is required.'
-        }"
-      ></imagine-input>
+        }"></imagine-input>
     </form>
   </div>
   <div class="margin-top-10">
@@ -83,29 +76,17 @@
   </div>
   <div class="margin-top-10">
     <form [formGroup]="formGroupExample">
-      <imagine-input
-        formControlName="mask"
-        label="Mask"
-        type="mask"
-        mask="ll_ll"
-      ></imagine-input>
+      <imagine-input formControlName="mask" label="Mask" type="mask" mask="ll_ll"></imagine-input>
     </form>
   </div>
   <div class="margin-top-10">
     <imagine-input label="Number" type="number"></imagine-input>
   </div>
   <div class="margin-top-10">
-    <imagine-input
-      label="Decimal Number"
-      type="number"
-      [decimalSpots]="2"
-    ></imagine-input>
+    <imagine-input label="Decimal Number" type="number" [decimalSpots]="2"></imagine-input>
   </div>
   <div class="margin-top-10">
-    <imagine-input
-      label="Positive Number"
-      type="positiveNumber"
-    ></imagine-input>
+    <imagine-input label="Positive Number" type="positiveNumber"></imagine-input>
   </div>
   <div class="margin-top-10">
     <imagine-input label="Floating Label" labelType="floating"></imagine-input>
@@ -114,10 +95,6 @@
     <imagine-input label="Fixed Label" labelType="fixed"></imagine-input>
   </div>
   <div class="margin-top-10">
-    <imagine-input
-      label="Material Input"
-      containerClass="material-input"
-      labelType="floating"
-    ></imagine-input>
+    <imagine-input label="Material Input" containerClass="material-input" labelType="floating"></imagine-input>
   </div>
 </div>

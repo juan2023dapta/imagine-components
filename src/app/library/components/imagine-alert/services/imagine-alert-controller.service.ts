@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { AlertInfo, ButtonAlert } from '../components/alert/alert.component';
+import { AlertInfo, ButtonAlert } from '../components/imagine-alert/imagine-alert.component';
 
 @Injectable({
   providedIn: 'root',
 })
-export class AlertController {
+export class ImagineAlertController {
   showAlert = false;
   loading = false;
   loadingAux = 0;
@@ -104,11 +104,7 @@ export class AlertController {
   /**
    *Method that handles the success of a request with an alert
    */
-  handleSuccess(alertData: {
-    msg: string;
-    title?: string;
-    buttons?: ButtonAlert[];
-  }) {
+  handleSuccess(alertData: { msg: string; title?: string; buttons?: ButtonAlert[] }) {
     this.openAlert({
       showIcon: true,
       iconName: 'bx bxs-check-circle',
@@ -169,9 +165,7 @@ export class AlertController {
   handleListMessages(listMessages: string[], listMessageTitle: string) {
     let message = '';
     if (listMessages && listMessages.length > 0) {
-      listMessages = listMessages.map(
-        (listMessage) => `<li>${listMessage}</li>`
-      );
+      listMessages = listMessages.map((listMessage) => `<li>${listMessage}</li>`);
       message += `
     <div class="text-align-start alert-margin-top-10">
       <p>

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AlertController } from 'src/app/library/components/alert/services/alert-controller.service';
+import { ImagineAlertController } from 'src/app/library/components/imagine-alert/services/imagine-alert-controller.service';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
@@ -11,7 +11,7 @@ import { AuthService } from '../../services/auth.service';
 export class LoginComponent implements OnInit {
   constructor(
     private authService: AuthService,
-    private alertController: AlertController,
+    private alertController: ImagineAlertController,
     private router: Router
   ) {}
 

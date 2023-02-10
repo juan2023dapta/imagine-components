@@ -1,12 +1,12 @@
-$primary: #2B5797;
-$primary-secondary: #558cdf;
-$white: #FCFCFC;
-$gray: #CBCDD3;
-$dark: #777777;
-$danger: #f54963;
-$danger-secondary: #ec687c;
-$success: #40b872;
-$success-secondary: #45dd85;
+$primary: var(--imagine-alert-primary-color);
+$primary-secondary: var(--imagine-alert-secondary-color);
+$white: var(--imagine-alert-white-color);
+$gray: var(--imagine-alert-gray-color);
+$dark: var(--imagine-alert-dark-color);
+$danger: var(--imagine-alert-danger-color);
+$danger-secondary: var(--imagine-alert-danger-low-color);
+$success: var(--imagine-alert-success-color);
+$success-secondary: var(--imagine-alert-success-low-color);
 $alert-background: rgba(243, 243, 243, 0.728);
 
 

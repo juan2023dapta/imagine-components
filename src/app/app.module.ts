@@ -7,17 +7,17 @@ import { AppComponent } from './app.component';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { environment } from '../environments/environment';
 import { provideAuth, getAuth } from '@angular/fire/auth';
-import { AlertModule } from './library/components/alert/alert.module';
+import { ImagineAlertModule } from './library/components/imagine-alert/imagine-alert.module';
 
 @NgModule({
   declarations: [AppComponent],
   imports: [
     BrowserModule,
-    AlertModule,
     AppRoutingModule,
     ReactiveFormsModule,
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(() => getAuth()),
+    ImagineAlertModule,
   ],
   providers: [],
   bootstrap: [AppComponent],
