@@ -1,0 +1,142 @@
+<div
+  draggable="false"
+  class="item"
+  tabindex="0"
+  oncontextmenu="return false;"
+  #item
+  [ngClass]="{ 'outline-primary': itemSelected || itemOverlapped, 'no-outline': element.type === 'line' }"
+  [ngStyle]="ngStyle">
+  <div [hidden]="!itemSelected || !canResize" class="resizer ne" #resizer></div>
+  <div [hidden]="!itemSelected || !canResize" class="resizer nw" #resizer></div>
+  <div [hidden]="!itemSelected || !canResize" class="resizer sw" #resizer></div>
+  <div [hidden]="!itemSelected || !canResize" class="resizer se" #resizer></div>
+  <ng-container *ngIf="type && !type.elementTemplate">
+    <p
+      [ngStyle]="textElementStyles"
+      draggable="false"
+      [textContent]="
+        textElement.previewLabel
+          ? textElement.text.includes('date')
+            ? (textElement.previewLabel | dateFormat: textElement.dateFormat)
+            : textElement.previewLabel
+          : textElement.text
+      "
+      (keyup)="elementTextChange($event)"
+      class="text-content-editable"
+      *ngIf="element.type === 'text'"
+      [attr.contenteditable]="textElement.previewLabel ? 'false' : 'true'"></p>
+
+    <div draggable="false" class="image-content no-select" *ngIf="element.type === 'image' && !imageElement.image">
+      <input #imageInput accept="image/*" style="display: none" type="file" />
+      <label class="image-input" (click)="imageElement.setImage(imageInput)">
+        <em class="bx bxs-file-image"></em>
+        <span>Upload Image</span>
+      </label>
+    </div>
+    <table *ngIf="isTableElement" #table summary="reusable">
+      <tr
+        #rowElement
+        [ngStyle]="{ height: row[0].height + units }"
+        *ngFor="let row of tableElement.data; let r = index">
+        <ng-container *ngFor="let cell of row; let c = index">
+          <th
+            class="table-content-editable"
+            scope="col"
+            resizableDocumentCell
+            [colSpan]="cell.colspan"
+            [rowSpan]="cell.rowspan"
+            [resizableColumn]="tableElement.greaterColumnsNumber - 1 !== c"
+            [resizableRow]="r < tableElement.data.length - 1"
+            [hidden]="cell.hidden"
+            [ngStyle]="{
+              borders: cell.borders ? '1px solid black' : '',
+              borderTop: cell.borderTop ? '1px solid black' : '',
+              borderRight: cell.borderRight ? '1px solid black' : '',
+              borderBottom: cell.borderBottom ? '1px solid black' : '',
+              borderLeft: cell.borderLeft ? '1px solid black' : '',
+              width: cell.width + units,
+              minWidth: tableElement.width * 0.1 + units
+            }"
+            (changeWidth)="tableElement.setRealSizes(table)"
+            (changeHeight)="tableElement.setRealSizes(table)"
+            (mousedown)="
+              mouseDownColumn({ event: $event, tableData: { rowIndex: r, columnIndex: c, stackIndex: -1 } })
+            ">
+            <div *ngIf="tableElement.greaterColumnsNumber - 1 !== c" class="column-resizer" #columnResizer></div>
+            <div *ngIf="r < tableElement.data.length - 1" class="row-resizer" #rowResizer></div>
+            <div
+              *ngIf="!cell.stack?.length"
+              [ngStyle]="{
+                textAlign: cell.alignment === 'left' ? 'start' : cell.alignment === 'right' ? 'end' : 'center'
+              }">
+              <span
+                class="cell-text"
+                [attr.contenteditable]="cell.previewLabel ? 'false' : 'true'"
+                [textContent]="
+                  cell.previewLabel
+                    ? cell.text && cell.text.includes('date') && cell.dateFormat
+                      ? (cell.previewLabel | dateFormat: cell.dateFormat)
+                      : cell.previewLabel
+                    : cell.text
+                "
+                (input)="tableTextChange($event, cell)"
+                [ngStyle]="{
+                  fontSize: cell.fontSize + units,
+                  fontFamily: cell.fontFamily + ', sans-serif',
+                  color: cell.color,
+                  letterSpacing: cell.characterSpacing + units,
+                  lineHeight: cell.lineHeight + units,
+                  fontWeight: cell.bold ? 'bold' : '400',
+                  fontStyle: cell.italics ? 'italic' : '',
+                  textDecorationStyle: cell.decorationStyle,
+                  textDecoration:
+                    (cell.decoration === 'lineThrough' ? 'line-through' : cell.decoration) + ' ' + cell.decorationStyle
+                }"></span>
+            </div>
+            <div
+              class="cell-stack"
+              *ngFor="let cellText of cell.stack; let s = index"
+              [ngStyle]="{
+                textAlign: cellText.alignment === 'left' ? 'start' : cellText.alignment === 'right' ? 'end' : 'center'
+              }"
+              (mousedown)="
+                mouseDownColumn({ event: $event, tableData: { rowIndex: r, columnIndex: c, stackIndex: s } })
+              ">
+              <span
+                class="cell-text"
+                [attr.contenteditable]="cellText.previewLabel ? 'false' : 'true'"
+                [textContent]="
+                  cellText.previewLabel
+                    ? cellText.text.includes('date')
+                      ? (cellText.previewLabel | dateFormat: cellText.dateFormat)
+                      : cellText.previewLabel
+                    : cellText.text
+                "
+                (input)="tableTextChange($event, cellText)"
+                [ngStyle]="{
+                  fontSize: cellText.fontSize + units,
+                  fontFamily: cellText.fontFamily + ', sans-serif',
+                  color: cellText.color,
+                  letterSpacing: cellText.characterSpacing + units,
+                  lineHeight: cellText.lineHeight + units,
+                  fontWeight: cellText.bold ? 'bold' : '400',
+                  fontStyle: cellText.italics ? 'italic' : '',
+                  textDecorationStyle: cellText.decorationStyle,
+                  textDecoration:
+                    (cellText.decoration === 'lineThrough' ? 'line-through' : cellText.decoration) +
+                    ' ' +
+                    cellText.decorationStyle
+                }"></span>
+            </div>
+          </th>
+        </ng-container>
+      </tr>
+      <div class="hidden-row" id="hidden-row">
+        <th scope="col" *ngFor="let cell of tableElement.data[0]"></th>
+      </div>
+    </table>
+  </ng-container>
+  <ng-container *ngIf="type && type.elementTemplate">
+    <ng-container *ngTemplateOutlet="type.elementTemplate; context: { $implicit: { element: element } }"></ng-container>
+  </ng-container>
+</div>

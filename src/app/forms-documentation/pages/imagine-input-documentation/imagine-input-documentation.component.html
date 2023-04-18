@@ -2,6 +2,9 @@
 
 <div class="columns-3 gap-20">
   <div class="margin-top-10">
+    <imagine-input label="Code Input" type="code"></imagine-input>
+  </div>
+  <div class="margin-top-10">
     <imagine-input label="Simple input"></imagine-input>
   </div>
   <div class="margin-top-10">
@@ -97,4 +100,10 @@
   <div class="margin-top-10">
     <imagine-input label="Material Input" containerClass="material-input" labelType="floating"></imagine-input>
   </div>
+  <div class="margin-top-10">
+    <imagine-input label="Code Input" type="code"></imagine-input>
+  </div>
+  <form [formGroup]="formGroupExample">
+    <app-datepicker formControlName="date" dateFormat="MM/DD/YYYY HH:mm"></app-datepicker>
+  </form>
 </div>

@@ -1,0 +1,254 @@
+<div>
+  <div class="label-container">
+    <label *ngIf="label !== ''">{{ label }}</label>
+    <ng-content select="[labelItem]"></ng-content>
+  </div>
+  <details
+    #details
+    class="date-picker"
+    (toggle)="onToggle($event, details)"
+    [ngStyle]="{
+      'margin-top': label !== '' ? '10px' : '0',
+      background: 'var(--app-' + background + '-color)'
+    }">
+    <summary
+      class="selected-date"
+      [ngStyle]="{ opacity: disable ? 0.7 : 1 }"
+      [ngClass]="{
+        'outline-danger': invalid && !disable && !readonly,
+        'outline-primary': !invalid && !disable && !readonly
+      }">
+      <em class="bx bx-x unselect-icon" (click)="selectDate({ reset: true })" *ngIf="canClear && value"></em>
+      <span class="value-editable" *ngIf="!range && value && splittedFormat.length">
+        <ng-container *ngFor="let format of splittedFormat; let i = index">
+          <span #dateInput *ngIf="format" [innerText]="value | dateFormat: upperFormats[i] | titlecase"></span>
+          <span *ngIf="separators[i]">{{ separators[i] }}</span>
+        </ng-container>
+      </span>
+      <span class="value-editable" *ngIf="!range && !value">
+        <ng-container *ngFor="let format of splittedFormat; let i = index">
+          <span #dateInput *ngIf="format">{{ format }}</span>
+          <span *ngIf="separators[i]">{{ separators[i] }}</span>
+        </ng-container>
+      </span>
+      <span *ngIf="range && value && (value[0] || value[1])">
+        {{ value[0] | dateFormat: dateFormat }} - {{ value[1] | dateFormat: dateFormat }}
+      </span>
+      <span *ngIf="range && (!value || (!value[0] && !value[1]))" style="opacity: 0.7">From - To</span>
+      <div class="end-icons">
+        <em class="bx bx-chevron-down select-icon" *ngIf="!disable && !readonly && showToggleIcon"></em>
+        <em
+          tooltip
+          *ngIf="invalid && messageErrorsType === 'tooltip'"
+          class="bx bx-error-circle"
+          [ngStyle]="{
+            'font-size': '25px',
+            color: 'var(--app-danger-color)'
+          }">
+          <app-tooltip-content [width]="tooltipErrorWidth" [showOrigin]="tooltipErrorShowOrigin">
+            <ng-container inside *ngTemplateOutlet="errorValidators"></ng-container>
+          </app-tooltip-content>
+        </em>
+        <div #endContent (click)="endContentClicked = true">
+          <ng-content select="[end]"></ng-content>
+        </div>
+      </div>
+    </summary>
+    <ul
+      class="dates"
+      #listContainer
+      [ngStyle]="{
+        top:
+          distanceToBottom <= 200
+            ? details.getBoundingClientRect().top - listContainer.getBoundingClientRect().height + 5 + 'px'
+            : details.getBoundingClientRect().top + details.getBoundingClientRect().height + 8 + 'px',
+        width: details.getBoundingClientRect().width - 2 + 'px'
+      }"
+      *ngIf="showCalendar">
+      <div class="month-year-container" *ngIf="currentView !== 'month' && currentView !== 'time'">
+        <div (click)="goPrev()" class="arrows prev-mth">
+          <em class="bx bx-chevron-left"></em>
+        </div>
+        <div class="month-year" (click)="currentView = currentView === 'year' ? 'days' : 'year'">
+          <span *ngIf="currentView === 'days'">{{ selectedMonth }}</span>
+          <span *ngIf="currentView === 'year'">
+            {{ calendarData.years[0] }} - {{ calendarData.years[calendarData.years.length - 1] }}
+          </span>
+        </div>
+        <div (click)="goNext()" class="arrows next-mth">
+          <em class="bx bx-chevron-right"></em>
+        </div>
+      </div>
+      <div class="years" *ngIf="currentView === 'year'">
+        <div
+          (click)="selectYear(year)"
+          [ngClass]="{
+            'selected-item': range
+              ? (value && value[0]?.getFullYear() === year) || (value && value[1]?.getFullYear() === year)
+              : value?.getFullYear() === year
+          }"
+          class="year"
+          *ngFor="let year of calendarData.years">
+          {{ year }}
+        </div>
+      </div>
+      <div class="months" *ngIf="currentView === 'month'">
+        <div
+          (click)="selectMonth(i)"
+          [ngClass]="{
+            'selected-item': range
+              ? (value && value[0]?.getMonth() === i) || (value && value[1]?.getMonth() === i)
+              : value?.getMonth() === i
+          }"
+          class="month"
+          *ngFor="let month of calendarData.months; let i = index">
+          {{ month }}
+        </div>
+      </div>
+      <div class="days" *ngIf="currentView === 'days'">
+        <div class="day empty-cell" *ngFor="let dayWeek of datepickerService.daysWeek">{{ dayWeek }}</div>
+        <div
+          class="day"
+          [ngClass]="{
+            'disabled-day':
+              (minDate &&
+                currentDate.year === minDate.getFullYear() &&
+                currentDate.month === minDate.getMonth() &&
+                day <= minDate.getDate()) ||
+              (minDate && currentDate.year === minDate.getFullYear() && currentDate.month < minDate.getMonth()) ||
+              (minDate && currentDate.year < minDate.getFullYear()) ||
+              (maxDate &&
+                currentDate.year === maxDate.getFullYear() &&
+                currentDate.month === maxDate.getMonth() &&
+                day >= maxDate.getDate()) ||
+              (maxDate && currentDate.year === maxDate.getFullYear() && currentDate.month > maxDate.getMonth()) ||
+              (maxDate && currentDate.year > maxDate.getFullYear()),
+            'empty-cell': day === '',
+            'first-in-range':
+              range &&
+              value &&
+              currentDate.year === value[0]?.getFullYear() &&
+              currentDate.month === value[0]?.getMonth() &&
+              day === value[0]?.getDate() + 1,
+            'last-in-range':
+              range &&
+              value &&
+              currentDate.year === value[1]?.getFullYear() &&
+              currentDate.month === value[1]?.getMonth() &&
+              day === value[1]?.getDate() - 1,
+            'in-range':
+              range &&
+              value &&
+              day &&
+              ({ day: this.day, month: currentDate.month, year: currentDate.year } | buildDate).getTime() >
+                value[0]?.getTime() &&
+              ({ day: this.day, month: currentDate.month, year: currentDate.year } | buildDate).getTime() <
+                value[1]?.getTime(),
+            'selected-item':
+              (!range &&
+                value?.getMonth() === currentDate.month &&
+                value?.getDate() === day &&
+                value?.getFullYear() === currentDate.year) ||
+              (range &&
+                value &&
+                value[0]?.getMonth() === currentDate.month &&
+                value[0]?.getDate() === day &&
+                value[0]?.getFullYear() === currentDate.year) ||
+              (range &&
+                value &&
+                value[1]?.getMonth() === currentDate.month &&
+                value[1]?.getDate() === day &&
+                value[1]?.getFullYear() === currentDate.year)
+          }"
+          (click)="selectDay({day, details})"
+          *ngFor="let day of calendarData.days">
+          {{ day }}
+        </div>
+      </div>
+      <div class="hours" *ngIf="currentView === 'time'">
+        <div (click)="selectTime(details)" class="confirm-button">OK</div>
+        <div class="hour">
+          <p class="arrow arrow-up" (click)="scrollTime(hours, -70)">></p>
+          <div class="values-container" #hours>
+            <p
+              [ngClass]="{
+                'selected-item':
+                  (!range &&
+                    (value?.getHours() === i + 1 ||
+                      value?.getHours() - 12 === i + 1 ||
+                      value?.getHours() + 12 === i + 1)) ||
+                  (range &&
+                    (value[rangeClickedCount]?.getHours() === i + 1 ||
+                      value[rangeClickedCount]?.getHours() - 12 === i + 1 ||
+                      value[rangeClickedCount]?.getHours() + 12 === i + 1)),
+                'selected-time': currentDate.hour === i + 1
+              }"
+              (click)="currentDate.hour = i + 1"
+              *ngFor="let hour of [].constructor(12); let i = index">
+              {{ i + 1 < 10 ? '0' : '' }}{{ i + 1 }}
+            </p>
+          </div>
+          <p class="arrow arrow-down" (click)="scrollTime(hours, 70)">></p>
+        </div>
+        <div class="hour">
+          <p class="arrow arrow-up" (click)="scrollTime(minutes, -120)">></p>
+          <div class="values-container" #minutes>
+            <p
+              [ngClass]="{
+                'selected-item':
+                  (!range && value?.getMinutes() === i) ||
+                  (range && value[rangeClickedCount]?.getMinutes() === i) ||
+                  (range && value[rangeClickedCount]?.getMinutes() === i),
+                'selected-time': currentDate.minute === i
+              }"
+              (click)="currentDate.minute = i"
+              *ngFor="let minutes of [].constructor(60); let i = index">
+              {{ i < 10 ? '0' : '' }}{{ i }}
+            </p>
+          </div>
+          <p class="arrow arrow-down" (click)="scrollTime(minutes, 70)">></p>
+        </div>
+        <div class="hour hour-periods">
+          <p
+            (click)="currentDate.period = 'AM'"
+            [ngClass]="{
+              'selected-item':
+                (!range && value?.getHours() >= 0 && value?.getHours() < 12) ||
+                (range && value[rangeClickedCount]?.getHours() >= 0 && value[rangeClickedCount]?.getHours() < 12),
+              'selected-time': currentDate.period === 'AM'
+            }">
+            AM
+          </p>
+          <p
+            (click)="currentDate.period = 'PM'"
+            [ngClass]="{
+              'selected-item':
+                (!range && !(value?.getHours() >= 0 && value?.getHours() < 12)) ||
+                (range && !(value[rangeClickedCount]?.getHours() >= 0 && value[rangeClickedCount]?.getHours() < 12)),
+              'selected-time': currentDate.period === 'PM'
+            }">
+            PM
+          </p>
+        </div>
+      </div>
+    </ul>
+  </details>
+</div>
+
+<div *ngIf="messageErrorsType === 'classic' && invalid">
+  <ng-container *ngTemplateOutlet="errorValidators"></ng-container>
+</div>
+
+<ng-template #errorValidators>
+  <ng-container *ngFor="let error of errors">
+    <ng-container [ngSwitch]="error">
+      <p *ngSwitchCase="'required'" class="msg-validator">{{ errorMessages[error] || fieldName + ' is required.' }}</p>
+      <p *ngSwitchCase="'incomplete'" class="msg-validator">
+        {{ errorMessages[error] || fieldName + ' is incomplete.' }}
+      </p>
+      <p *ngSwitchDefault class="msg-validator">
+        {{ errorMessages[error] || error + ' message not assigned.' }}
+      </p>
+    </ng-container>
+  </ng-container>
+</ng-template>

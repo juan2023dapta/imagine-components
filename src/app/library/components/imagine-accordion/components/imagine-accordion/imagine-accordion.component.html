@@ -1,0 +1,15 @@
+<div class="accordion" #container (click)="toggleAccordion()" [ngStyle]="style">
+  <p class="accordion-title">
+    <ng-content select="[title]"></ng-content>
+    <em [ngClass]="{ 'accordion-icon-rotate': open }" class="bx bx-chevron-down accordion-icon"></em>
+  </p>
+  <p
+    (click)="$event.stopPropagation()"
+    *ngIf="open && accordionType !== 'hidden'"
+    class="content"
+    #content
+    [ngClass]="{ 'content-floating': accordionType === 'floating' }"
+    [ngStyle]="contentNgStyle">
+    <ng-content select="[content]"></ng-content>
+  </p>
+</div>

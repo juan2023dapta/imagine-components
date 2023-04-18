@@ -1,100 +1,145 @@
-<div [ngClass]="{ 'label-margin': !!label || labelContentExist }">
-  <label [ngClass]="{ 'color-danger': invalid }" *ngIf="labelType === 'normal'">
-    <span *ngIf="!labelContentExist">{{ label }}</span>
-    <span #labelContent>
-      <ng-content select="[labelContent]"></ng-content>
-    </span>
-  </label>
-</div>
-<div
-  [attr.state]="invalid ? 'invalid' : ''"
-  class="imagine-input"
-  [class]="containerClass"
-  [ngClass]="{ 'outline-primary': isFocused }">
-  <span #startContent class="content" [ngClass]="{ 'padding-content': startContentExist }">
-    <ng-content select="[startContent]"></ng-content>
-  </span>
-  <input
-    [ngClass]="{
-      'start-content-exist': startContentExist && !endContentExist,
-      'end-content-exist': endContentExist && !startContentExist,
-      'all-content-exist': endContentExist && startContentExist
-    }"
-    class="imagine-input__element"
-    #input
-    (input)="onInput($event)"
-    (keydown)="onKeyDown($event)"
-    (keyup)="onKeyUp($event)"
-    (blur)="onBlur($event)"
-    (focus)="onFocus($event)"
-    [name]="name"
-    [readonly]="readonly"
-    [value]="value"
-    [disabled]="disable"
-    [placeholder]="placeholder || ' '"
-    [type]="excludedTypes.includes(type) ? '' : type"
-    [autocomplete]="autocomplete ? 'on' : 'new-password'"
-    [id]="label" />
-  <label
-    [ngClass]="{ 'color-danger': invalid }"
-    [class]="labelType + '-label'"
-    [for]="label"
-    *ngIf="labelType === 'floating' || labelType === 'fixed'">
-    <span *ngIf="!labelContentExist">{{ label }}</span>
-    <span #labelContent>
-      <ng-content select="[labelContent]"></ng-content>
-    </span>
-  </label>
-  <span #endContent class="content" [ngClass]="{ 'padding-content': endContentExist }">
-    <ng-content select="[endContent]"></ng-content>
-  </span>
-</div>
-<ng-container *ngIf="invalid && errors && errors.length">
-  <ng-container *ngTemplateOutlet="errorMessagesTemplate"></ng-container>
-</ng-container>
+<div class="container">
+  <div [ngClass]="{ 'label-margin': !!label || labelContentExist }">
+    <label [ngClass]="{ 'color-danger': invalid }" *ngIf="labelType === 'normal'">
+      <span *ngIf="!labelContentExist">{{ label }}</span>
+      <span #labelContent>
+        <ng-content select="[labelContent]"></ng-content>
+      </span>
+    </label>
+  </div>
 
-<ng-template #errorMessagesTemplate>
-  <ng-container [ngSwitch]="errors[0]">
-    <small *ngSwitchCase="'required'" class="error-message">
-      {{ errorMessages[errors[0]] || fieldName + ' is required.' }}
-    </small>
-    <small *ngSwitchCase="'minlength'" class="error-message">
-      {{
-        errorMessages[errors[0]] ||
-          fieldName +
-            ' must have at least ' +
-            controlErrors[errors[0]].requiredLength +
-            '' +
-            (type === 'number' || type === 'positiveNumber' || type === 'groupNumber' || type === 'currency'
-              ? ' digits'
-              : ' characters') +
-            '.'
-      }}
-    </small>
-    <small *ngSwitchCase="'maxlength'" class="error-message">
-      {{
-        errorMessages[errors[0]] ||
-          fieldName +
-            ' must have max. ' +
-            controlErrors[errors[0]].requiredLength +
-            '' +
-            (type === 'number' || type === 'positiveNumber' || type === 'groupNumber' || type === 'currency'
-              ? ' digits'
-              : ' characters') +
-            '.'
-      }}
-    </small>
-    <small *ngSwitchCase="'emailMatch'" class="error-message">
-      {{ errorMessages[errors[0]] || 'Email format is invalid.' }}
-    </small>
-    <small *ngSwitchCase="'contains'" class="error-message">
-      {{ errorMessages[errors[0]] || 'Contains invalid values.' }}
-    </small>
-    <small *ngSwitchCase="'pattern'" class="error-message">
-      {{ errorMessages[errors[0]] || fieldName + " doesn't have a valid format." }}
-    </small>
-    <small *ngSwitchDefault class="error-message">
-      {{ errorMessages[errors[0]] || errors[0] + ' message not assigned.' }}
-    </small>
+  <div
+    [attr.invalid]="invalid ? 'true' : ''"
+    [attr.readonly]="readonly ? 'true' : ''"
+    [class]="'imagine-input ' + containerClass"
+    [style]="containerStyle"
+    [ngClass]="{
+      'outline-primary': isFocused,
+      'imagine-input--box': boxTypes.includes(type),
+      'imagine-input--code': type === 'code'
+    }">
+    <div class="input-lines" *ngIf="type === 'code'">
+      <p *ngFor="let inputLine of [].constructor(inputLinesCount); let i = index">
+        {{ i + 1 }}
+      </p>
+    </div>
+    <span #startContent class="content content--start">
+      <ng-content select="[startContent]"></ng-content>
+    </span>
+    <input
+      *ngIf="!boxTypes.includes(type)"
+      [ngClass]="{
+        'start-content-exist': startContentExist && !endContentExist,
+        'end-content-exist': endContentExist && !startContentExist,
+        'all-content-exist': endContentExist && startContentExist
+      }"
+      class="imagine-input__element"
+      #inputElement
+      (input)="onInput($event)"
+      (keydown)="onKeyDown($event)"
+      (keyup)="onKeyUp($event)"
+      (blur)="onBlur($event)"
+      (focus)="onFocus($event)"
+      [name]="name"
+      [readonly]="readonly"
+      [value]="value"
+      [disabled]="disable"
+      [placeholder]="placeholder || ' '"
+      [type]="excludedTypes.includes(type) ? '' : type"
+      [autocomplete]="autocomplete ? 'on' : 'new-password'"
+      [id]="label"
+      [attr.list]="list" />
+    <div
+      *ngIf="boxTypes.includes(type)"
+      #inputElement
+      [ngClass]="{
+        'start-content-exist': startContentExist && !endContentExist,
+        'end-content-exist': endContentExist && !startContentExist,
+        'all-content-exist': endContentExist && startContentExist,
+        'imagine-input__element--box': inputBoxBigger
+      }"
+      class="imagine-input__element"
+      (input)="onInput(inputTarget)"
+      (keydown)="onKeyDown($event)"
+      (keyup)="onKeyUp($event)"
+      (blur)="onBlur($event)"
+      (focus)="onFocus($event)"
+      contenteditable="true"></div>
+    <label
+      [ngClass]="{ 'color-danger': invalid }"
+      [class]="labelType + '-label'"
+      [for]="label"
+      *ngIf="labelType === 'floating' || labelType === 'fixed'">
+      <span *ngIf="!labelContentExist">{{ label }}</span>
+      <span #labelContent>
+        <ng-content select="[labelContent]"></ng-content>
+      </span>
+    </label>
+    <span #endContent class="content content--end">
+      <ng-content select="[endContent]"></ng-content>
+    </span>
+  </div>
+
+  <ng-container *ngIf="showErrorMessages && invalid && errors && errors.length">
+    <ng-container *ngTemplateOutlet="errorMessagesTemplate"></ng-container>
   </ng-container>
-</ng-template>
+
+  <ng-template #errorMessagesTemplate>
+    <ng-container [ngSwitch]="errors[0]">
+      <small *ngSwitchCase="'required'" [class]="'error-message ' + errorMessagesClass">
+        {{ errorMessages[errors[0]] || fieldName + ' is required.' }}
+      </small>
+      <small *ngSwitchCase="'email'" [class]="'error-message ' + errorMessagesClass">
+        {{ errorMessages[errors[0]] || fieldName + ' is not a valid email.' }}
+      </small>
+      <small *ngSwitchCase="'minlength'" [class]="'error-message ' + errorMessagesClass">
+        {{
+          errorMessages[errors[0]] ||
+            fieldName +
+              ' must have at least ' +
+              controlErrors[errors[0]].requiredLength +
+              '' +
+              (type === 'number' || type === 'positiveNumber' || type === 'groupNumber' || type === 'currency'
+                ? ' digits'
+                : ' characters') +
+              '.'
+        }}
+      </small>
+      <small *ngSwitchCase="'maxlength'" [class]="'error-message ' + errorMessagesClass">
+        {{
+          errorMessages[errors[0]] ||
+            fieldName +
+              ' must have max. ' +
+              controlErrors[errors[0]].requiredLength +
+              '' +
+              (type === 'number' || type === 'positiveNumber' || type === 'groupNumber' || type === 'currency'
+                ? ' digits'
+                : ' characters') +
+              '.'
+        }}
+      </small>
+      <small *ngSwitchCase="'emailMatch'" [class]="'error-message ' + errorMessagesClass">
+        {{ errorMessages[errors[0]] || 'Email format is invalid.' }}
+      </small>
+      <small *ngSwitchCase="'contains'" [class]="'error-message ' + errorMessagesClass">
+        {{ errorMessages[errors[0]] || 'Contains invalid values.' }}
+      </small>
+      <small *ngSwitchCase="'pattern'" [class]="'error-message ' + errorMessagesClass">
+        {{ errorMessages[errors[0]] || fieldName + " doesn't have a valid format." }}
+      </small>
+      <small *ngSwitchDefault [class]="'error-message ' + errorMessagesClass">
+        {{ errorMessages[errors[0]] || errors[0] + ' message not assigned.' }}
+      </small>
+    </ng-container>
+  </ng-template>
+</div>
+
+<div
+  #autocompleteContainer
+  *ngIf="autocompleteConfig.show"
+  [ngStyle]="{ top: autocompleteConfig.y + 15 + 'px', left: autocompleteConfig.x + 'px' }"
+  class="autocomplete-variable">
+  <div *ngFor="let variable of variablesList" (click)="insertText(variable)" class="autocomplete-variable__option">
+    {{ variable }}
+  </div>
+</div>

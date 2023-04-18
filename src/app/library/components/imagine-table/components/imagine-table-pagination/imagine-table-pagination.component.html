@@ -1,0 +1,10 @@
+<div class="pagination-container" style="margin-top: 20px">
+  <p>{{ results }} of {{ totalResults }} results</p>
+  <p>Page {{ currentPage }} of {{ lastPage }}</p>
+  <div class="text-align-center">
+    <div class="pagination-container-buttons" *ngIf="lastPage > 1">
+      <button (click)="pagination('previous')">Previous</button>
+      <button (click)="pagination('next')">Next</button>
+    </div>
+  </div>
+</div>

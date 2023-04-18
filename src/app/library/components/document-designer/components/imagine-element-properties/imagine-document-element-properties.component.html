@@ -1,0 +1,16 @@
+<div *ngFor="let documentElementComponent of documentElementComponents">
+  <ng-container *ngFor="let template of formTemplates">
+    <ng-container *ngIf="documentElementComponent.element.type === template.elementType">
+      <ng-container
+        *ngTemplateOutlet="
+          template.template;
+          context: {
+            $implicit: {
+              element: documentElementComponent.element,
+              itemSelected: documentElementComponent.itemSelected
+            }
+          }
+        "></ng-container>
+    </ng-container>
+  </ng-container>
+</div>

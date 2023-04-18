@@ -1,0 +1,40 @@
+<ng-container *ngIf="segmentStyle === 'buttons'">
+  <imagine-button [style]="ngStyle" height="auto" (click)="change()" background="light-gray" borderColor="primary">
+    <ng-container *ngIf="!templateRef">
+      {{ name }}
+    </ng-container>
+    <ng-container *ngIf="templateRef">
+      <ng-container *ngTemplateOutlet="content"></ng-container>
+    </ng-container>
+  </imagine-button>
+</ng-container>
+
+<ng-container *ngIf="segmentStyle === 'segment'">
+  <imagine-button [style]="ngStyle" background="light" (click)="change()">
+    <div style="margin-top: -10px" class="responsive-text">
+      <ng-container *ngIf="!templateRef">
+        {{ name }}
+      </ng-container>
+      <ng-container *ngIf="templateRef">
+        <ng-container *ngTemplateOutlet="content"></ng-container>
+      </ng-container>
+    </div>
+  </imagine-button>
+</ng-container>
+
+<ng-container *ngIf="segmentStyle === 'pill'">
+  <imagine-button [style]="ngStyle" height="auto" (click)="change()" [background]="selected ? 'primary' : 'light'">
+    <span [ngStyle]="{ color: selected ? 'white' : 'black' }">
+      <ng-container *ngIf="!templateRef">
+        {{ name }}
+      </ng-container>
+      <ng-container *ngIf="templateRef">
+        <ng-container *ngTemplateOutlet="content"></ng-container>
+      </ng-container>
+    </span>
+  </imagine-button>
+</ng-container>
+
+<ng-template #content>
+  <ng-container *ngTemplateOutlet="templateRef"></ng-container>
+</ng-template>

@@ -1,8 +1,13 @@
 $select-primary-color: var(--imagine-primary-color);
+$select-box-shadow-focus: var(--imagine-input-box-shadow-focus);
 $select-danger-color: var(--imagine-danger-color);
 $select-grey-color: var(--imagine-grey-color);
 $select-size-height: var(--imagine-input-height);
 $select-label-distance: var(--imagine-label-distance);
+$select-dropdown-icon-color: var(--imagine-select-icon-color);
+$select-text-color: var(--imagine-text-color);
+$select-font-size: var(--imagine-input-font-size);
+
 
 :host{
     position: relative;
@@ -22,6 +27,8 @@ $select-label-distance: var(--imagine-label-distance);
       border-radius: 7px;
       margin-left: 1.7px;
       summary {
+        font-size: $select-font-size;
+        color: $select-text-color;
         font-weight: normal;
         cursor: pointer;
         border-radius: 5px;
@@ -31,7 +38,7 @@ $select-label-distance: var(--imagine-label-distance);
         align-items: center;
         padding-right: 10px;
         padding-left: 5px;
-        p{
+        .imagine-option-selected{
             flex-grow: 3;
         }
         .content{
@@ -49,8 +56,7 @@ $select-label-distance: var(--imagine-label-distance);
       }
 
       .options {
-        border: 1px solid $select-grey-color;
-        box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;
+        box-shadow:  0 2px 12px 0 rgb(0 0 0 / 10%);
         list-style: none;
         cursor: pointer;
         width: 100%;
@@ -91,14 +97,15 @@ $select-label-distance: var(--imagine-label-distance);
       margin-top: -3px;
     }
     .select-icon {
-        border-right: 3px solid; 
-        border-bottom: 3px solid;
+        border-right: 2px solid; 
+        border-bottom: 2px solid;
         height: 10px;
         width: 10px;
         transform: rotate(45deg);
         margin-right: 5px;
         margin-top: -5px;
         border-radius: 2px;
+        border-color: $select-dropdown-icon-color;
     }
 }
 
@@ -120,5 +127,12 @@ $select-label-distance: var(--imagine-label-distance);
   
   .outline-primary:focus {
     outline: 2px solid $select-primary-color;
+    outline: 1px solid  $select-primary-color;
+    box-shadow: 0 0 0 0.2rem $select-box-shadow-focus;
   }
+
+
+   .outline-primary[state="invalid"]{
+       box-shadow: none;
+    }
   

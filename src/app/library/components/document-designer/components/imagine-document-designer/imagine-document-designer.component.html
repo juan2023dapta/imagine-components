@@ -1,0 +1,60 @@
+<div class="main" #mainContainer>
+  <div class="drag-and-drop-wrapper" #wrapper>
+    <div class="rulers" [ngStyle]="{ width: rulerWidth, height: rulerHeight }">
+      <div
+        class="ruler"
+        [ngClass]="{ 'px-units': units === 'px', 'mm-units': units === 'mm' }"
+        [ngStyle]="{ width, height: '30px', 'margin-left': '30px' }">
+        <span class="ruler-zero">0{{ units }}</span>
+        <ul class="ruler-x">
+          <li *ngFor="let group of [].constructor(rulerGroupsX); let i = index"></li>
+        </ul>
+      </div>
+      <div
+        class="ruler"
+        [ngClass]="{ 'px-units': units === 'px', 'mm-units': units === 'mm' }"
+        [ngStyle]="{ height, width: '30px', 'margin-left': '0px' }">
+        <span class="ruler-zero rotate">0{{ units }}</span>
+        <ul class="ruler-y">
+          <li *ngFor="let group of [].constructor(rulerGroupsX)"></li>
+        </ul>
+      </div>
+    </div>
+    <div
+      tabindex="0"
+      class="drag-and-drop"
+      #container
+      [ngStyle]="{ width, height,'margin-top': '-'+height, background: backgroundImage}">
+      <ng-container *ngFor="let element of elements">
+        <imagine-document-element
+          (contextMenuChange)="contextMenuChange($event)"
+          *ngIf="page === element.page"
+          [zoom]="zoom"
+          [units]="units"
+          [documentDesignerComponent]="this"
+          [element]="element"></imagine-document-element>
+      </ng-container>
+      <div class="context-menu" #contextMenu [hidden]="!copiedElement">
+        <div class="context-buttons">
+          <div
+            *ngFor="let option of contextMenuOptions"
+            (mousedown)="option.subOptions ? null : actionFromContextMenu($event, option)"
+            class="context-button">
+            {{ option.option }}
+            <em *ngIf="option.icon" [class]="option.icon" [ngStyle]="{ color: option.iconColor }"></em>
+            <span *ngIf="option.subOptions">></span>
+            <div class="sub-options" *ngIf="option.subOptions">
+              <div
+                (mousedown)="actionFromContextMenu($event, subOption)"
+                class="context-button"
+                *ngFor="let subOption of option.subOptions">
+                {{ subOption.option }}
+                <em *ngIf="subOption.icon" [class]="subOption.icon" [ngStyle]="{ color: subOption.iconColor }"></em>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

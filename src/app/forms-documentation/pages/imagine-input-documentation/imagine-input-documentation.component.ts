@@ -13,6 +13,7 @@ export class ImagineInputDocumentationComponent implements OnInit {
     customName: ['', Validators.required],
     customErrorMessage: [10000000, Validators.required],
     mask: ['', Validators.required],
+    date: ['2023-02-16T10:56:33.249Z'],
   });
   constructor(private formBuilder: FormBuilder) {}
 

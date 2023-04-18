@@ -1,0 +1,45 @@
+/* Needed CSS to make <details> behave more like an accordion */
+/* Fix for Edge & IE */
+
+.accordion{
+    padding: 20px 0px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    background-color: white;
+}
+
+.accordion-title{
+  padding-top: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.accordion-icon {
+  font-size: 25px;
+}
+
+.accordion-icon-rotate {
+  transform: rotateZ(180deg);
+}
+  .content{
+    margin-top: 20px;
+    list-style: none;
+    cursor: pointer;
+    animation: fadeIn 0.1s ease-in;
+  }
+  .content:last-child {
+    margin-bottom: 0;
+  }
+
+  .content-floating{
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;
+    width: 100%;
+    background: #fff;
+    position: fixed;
+    border-radius: 5px;
+    height: auto;
+    overflow-y: auto;
+    z-index: 9999;
+  }

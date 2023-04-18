@@ -1,4 +1,4 @@
-import { CurrencyPipe, DecimalPipe } from '@angular/common';
+import { CurrencyPipe, DecimalPipe, TitleCasePipe } from '@angular/common';
 import {
   Component,
   Host,
@@ -13,6 +13,7 @@ import {
   ElementRef,
   forwardRef,
   ChangeDetectorRef,
+  HostListener,
 } from '@angular/core';
 import {
   ValidationErrors,
@@ -37,11 +38,14 @@ import { ImagineInputType } from '../../types/input.type';
     },
     CurrencyPipe,
     DecimalPipe,
+    TitleCasePipe,
   ],
 })
 export class ImagineInputComponent implements ControlValueAccessor, AfterViewInit, OnDestroy {
   /**Access to native input element */
-  @ViewChild('input') input!: ElementRef<HTMLInputElement>;
+  @ViewChild('inputElement') inputElement!: ElementRef<HTMLInputElement>;
+  /**Access to native autocompleteContainer element */
+  @ViewChild('autocompleteContainer') autocompleteContainer!: ElementRef<HTMLDivElement>;
   /**Access to the label content container of the input like icons or images */
   @ViewChild('labelContent') labelContent!: ElementRef<HTMLElement>;
   /**Access to the start content container of the input like icons or images */
@@ -51,7 +55,7 @@ export class ImagineInputComponent implements ControlValueAccessor, AfterViewIni
   /**Tells parent when value changes */
   @Output() valueChange = new EventEmitter();
   /**Sends parent on input event */
-  @Output() inputChange = new EventEmitter();
+  @Output() input = new EventEmitter();
   /**Sends parent on key down pressed event */
   @Output() keyDown = new EventEmitter();
   /**Sends parent on key up pressed event */
@@ -95,6 +99,8 @@ export class ImagineInputComponent implements ControlValueAccessor, AfterViewIni
   @Input() showErrorMessages = true;
   /**Sets errors of reactive forms*/
   @Input() errors: any[] = [];
+  /**error messages class */
+  @Input() errorMessagesClass = '';
   /** to know if auto complete parent its invalid */
   @Input() invalidParent: boolean | undefined = false;
   /** to know if show errors under input or in a tooltip*/
@@ -130,6 +136,12 @@ export class ImagineInputComponent implements ControlValueAccessor, AfterViewIni
   @Input() decimalSpots = 0;
   /**container class */
   @Input() containerClass = '';
+  /**container style */
+  @Input() containerStyle = {};
+  /**autocomplete list */
+  @Input() list = '';
+  /**autocomplete variables list */
+  @Input() variablesList: string[] = [];
 
   /**Reactive form control errors to show them in the input*/
   controlErrors!: ValidationErrors;
@@ -141,19 +153,39 @@ export class ImagineInputComponent implements ControlValueAccessor, AfterViewIni
   isFocused = false;
   /**Stores current key pressed */
   currentKeyPressed = '';
+  /**Stores current key pressed */
+  lastKeyPressed = '';
   /**Stores current caret position */
   caretPosition = 0;
   /**excluded types */
   excludedTypes = ['number', 'date'];
+  /**box types */
+  boxTypes: ImagineInputType[] = ['variables', 'chip', 'code'];
   /**outline class active */
   outlineClassActive = '';
+  /**autocomplete box top, left */
+  autocompleteConfig = {
+    x: 0,
+    y: 0,
+    show: false,
+  };
+
+  /**last caret position */
+  lastCaretPosition = 0;
+
+  /**
+   * input count lines code editir
+   */
+  inputLines = 1;
+
   /**
    *
    * @param controlContainer access control container reactive form
    */
   constructor(
     @Optional() @Host() @SkipSelf() public controlContainer: ControlContainer,
-    private changeDetector: ChangeDetectorRef
+    private changeDetector: ChangeDetectorRef,
+    private titleCasePipe: TitleCasePipe
   ) {}
 
   /**
@@ -165,15 +197,30 @@ export class ImagineInputComponent implements ControlValueAccessor, AfterViewIni
   }
 
   /**
+   * input target used on input event (chip type)
+   */
+  get inputTarget() {
+    return { target: { ...this.inputElement, value: this.inputElement.nativeElement.textContent } };
+  }
+
+  /**
+   * get input box height is bigger than normal height to apply padding
+   */
+  get inputBoxBigger() {
+    if (this.inputElement && this.inputElement.nativeElement && this.inputElement.nativeElement.parentElement) {
+      const height = parseInt(this.inputElement.nativeElement.parentElement.getBoundingClientRect().height + '');
+      const minHeight = parseInt(getComputedStyle(this.inputElement.nativeElement.parentElement).minHeight);
+      const padding = parseInt(getComputedStyle(this.inputElement.nativeElement).paddingTop);
+      return height - padding * 2 > minHeight;
+    }
+    return false;
+  }
+  /**
    * Detect when input is invalid
    */
   get invalid() {
     return (
-      (this.showErrorMessages &&
-        this.errors.length > 0 &&
-        this.inputFormControl?.invalid &&
-        this.inputFormControl?.touched) ||
-      this.invalidParent
+      (this.errors.length > 0 && this.inputFormControl?.invalid && this.inputFormControl?.touched) || this.invalidParent
     );
   }
 
@@ -203,6 +250,34 @@ export class ImagineInputComponent implements ControlValueAccessor, AfterViewIni
    */
   get endContentExist() {
     return this.endContent?.nativeElement.children.length > 0;
+  }
+
+  /**
+   * input clienhte rect
+   */
+  get clientRectInput() {
+    return this.inputElement?.nativeElement.getBoundingClientRect();
+  }
+
+  /**
+   * input lines
+   */
+  get inputLinesCount() {
+    return Math.floor(this.clientRectInput?.height || 1 / 19) || 1;
+  }
+
+  get currentLine() {
+    const sel = document.getSelection();
+    if (!sel) {
+      return 1;
+    }
+    const nd = sel.anchorNode;
+    if (!nd) {
+      return 1;
+    }
+    const text = nd.textContent!.slice(0, sel.focusOffset);
+
+    return text.split('\n').length;
   }
 
   /**
@@ -252,6 +327,11 @@ export class ImagineInputComponent implements ControlValueAccessor, AfterViewIni
   };
   writeValue(value: any): void {
     this.value = value?.toString() || '';
+    if (this.boxTypes.includes(this.type)) {
+      setTimeout(() => {
+        this.inputElement.nativeElement.innerText = this.value;
+      }, 0);
+    }
     this.verifyFormat();
   }
   registerOnChange(fn: any): void {
@@ -286,6 +366,9 @@ export class ImagineInputComponent implements ControlValueAccessor, AfterViewIni
    * @param event key down event
    */
   onKeyDown(event: any) {
+    if (this.boxTypes.includes(this.type) && event.which === 13 && this.type !== 'code') {
+      event.preventDefault();
+    }
     this.currentKeyPressed = event.key;
     this.caretPosition = event.target.selectionStart;
     this.keyDown.emit(event);
@@ -333,10 +416,211 @@ export class ImagineInputComponent implements ControlValueAccessor, AfterViewIni
     if (this.type === 'mask') {
       this.formatMask(event, currentValue);
     }
+    if (this.type === 'chip') {
+      this.chipFormat(event);
+    }
+    if (this.type === 'variables') {
+      this.variableFormat(event);
+    }
+    if (this.type === 'title') {
+      this.titlecaseFormat(event);
+    }
+    if (this.type === 'code') {
+      this.lastCaretPosition = this.getContentEditableCaretposition();
+      this.codeFormat();
+    }
+
+    this.lastKeyPressed = this.currentKeyPressed;
     this.value = event.target.value;
     this.onChange(this.value);
     this.valueChange.emit(this.value);
-    this.inputChange.emit(event);
+    this.input.emit(event);
+  }
+
+  codeFormat() {
+    this.inputElement.nativeElement.innerHTML = this.inputElement.nativeElement.innerHTML.replace(
+      /if/g,
+      '<span style="color:#C189B5;">if</span>'
+    );
+    this.inputElement.nativeElement.innerHTML = this.inputElement.nativeElement.innerHTML.replace(
+      /\(/g,
+      '<span style="color:#4C89E3;">(</span>'
+    );
+    this.inputElement.nativeElement.innerHTML = this.inputElement.nativeElement.innerHTML.replace(
+      /\)/g,
+      '<span style="color:#4C89E3;">)</span>'
+    );
+    this.inputElement.nativeElement.innerHTML = this.inputElement.nativeElement.innerHTML.replace(
+      /\{/g,
+      '<span style="color:#4C89E3;">{</span>'
+    );
+    this.inputElement.nativeElement.innerHTML = this.inputElement.nativeElement.innerHTML.replace(
+      /\}/g,
+      '<span style="color:#4C89E3;">}</span>'
+    );
+    this.setCaretPosition(this.inputElement.nativeElement, this.lastCaretPosition);
+    this.inputElement.nativeElement.focus();
+  }
+
+  // Move caret to a specific point in a DOM element
+  setCaretPosition(el: any, pos: any) {
+    // Loop through all child nodes
+    for (var node of el.childNodes) {
+      if (node.nodeType == 3) {
+        // we have a text node
+        if (node.length >= pos) {
+          console.log(pos);
+          // finally add our range
+          var range = document.createRange(),
+            sel = window.getSelection();
+          range.setStart(node, pos);
+          range.collapse(true);
+          sel!.removeAllRanges();
+          sel!.addRange(range);
+          return -1; // we are done
+        } else {
+          pos -= node.length;
+        }
+      } else {
+        pos = this.setCaretPosition(node, pos);
+        if (pos == -1) {
+          return -1; // no need to finish the for loop
+        }
+      }
+    }
+    return pos; // needed because of recursion stuff
+  }
+  /**
+   * titlecase format
+   */
+  titlecaseFormat(event: any) {
+    event.target.value = this.titleCasePipe.transform(event.target.value);
+  }
+
+  /**variable format */
+  variableFormat(event: any) {
+    if (!event.target.value) {
+      return;
+    }
+    let caretPosition = this.getContentEditableCaretposition();
+    this.lastCaretPosition = caretPosition;
+    const value = event.target.value.split('');
+    if (
+      (value[caretPosition - 1] &&
+        value[caretPosition - 1].includes('{') &&
+        value[caretPosition] &&
+        value[caretPosition].includes('{')) ||
+      (value[caretPosition - 1] &&
+        value[caretPosition - 1].includes('{') &&
+        value[caretPosition - 2] &&
+        value[caretPosition - 2].includes('{'))
+    ) {
+      const selection = window.getSelection(),
+        range = selection!.getRangeAt(0),
+        rect = range.getClientRects()[0];
+
+      this.autocompleteConfig.x = rect.x;
+      this.autocompleteConfig.y = rect.y;
+      this.autocompleteConfig.show = true;
+    } else {
+      this.autocompleteConfig.show = false;
+    }
+  }
+
+  insertText(option: string) {
+    let value = this.value;
+    if (this.lastCaretPosition >= value.length) {
+      value = value + option + '}}';
+      this.onInput({ target: { value } });
+      this.inputElement.nativeElement.innerText = value;
+    } else {
+      const valueArray = value.split('');
+      valueArray.splice(this.lastCaretPosition, 0, option + '}}');
+      value = valueArray.join('');
+      this.onInput({ target: { value } });
+      this.inputElement.nativeElement.innerText = value;
+    }
+  }
+  /**chip format */
+  chipFormat(event: any) {
+    if (this.currentKeyPressed === 'Backspace') {
+      setTimeout(() => {
+        this.inputElement.nativeElement.querySelectorAll('span').forEach((span) => {
+          if (!span.textContent?.includes(' ')) {
+            span.innerHTML = '&nbsp;';
+            span.setAttribute('style', '');
+            setTimeout(() => {
+              this.placeCaretAtEndContentEditable(this.inputElement.nativeElement);
+            }, 0);
+          }
+        });
+      }, 0);
+    }
+    if (this.currentKeyPressed === ' ') {
+      const display = 'display:inline-block;';
+      const style = `
+      border: 1px solid var(--imagine-primary-color);
+      border-radius: 5px;
+      margin-left: 4px;
+      margin-top:4px;
+      padding:2px;
+      background-color: var(--imagine-input-box-shadow-focus);
+      width: min-content; ${display}`;
+      const value = event.target.value.split(' ');
+      let content = '';
+      value.forEach((item: string) => {
+        content += `<div style="${style}">${item} </div>`;
+      });
+      content += `<div style="${display}">&nbsp;</div>`;
+      this.inputElement.nativeElement.innerHTML = content;
+      this.placeCaretAtEndContentEditable(this.inputElement.nativeElement);
+    }
+  }
+
+  /**
+   * get content editable caret position
+   */
+  getContentEditableCaretposition(node: any = this.inputElement.nativeElement) {
+    let position = 0;
+    const isSupported = typeof window.getSelection !== 'undefined';
+    if (isSupported) {
+      const selection = window.getSelection();
+      // Check if there is a selection (i.e. cursor in place)
+      if (selection!.rangeCount !== 0) {
+        // Store the original range
+        const range = window.getSelection()!.getRangeAt(0);
+        // Clone the range
+        const preCaretRange = range.cloneRange();
+        // Select all textual contents from the contenteditable element
+        preCaretRange.selectNodeContents(node);
+        // And set the range end to the original clicked position
+        preCaretRange.setEnd(range.endContainer, range.endOffset);
+        // Return the text length from contenteditable start to the range end
+        position = preCaretRange.toString().length;
+      }
+    }
+    return position;
+  }
+
+  /**
+   * place carte position at last element on chip write
+   * @param el element to place caret position
+   */
+  placeCaretAtEndContentEditable(el: HTMLElement) {
+    el.focus();
+    if (typeof window.getSelection != 'undefined' && typeof document.createRange != 'undefined') {
+      var range = document.createRange();
+      range.selectNodeContents(el);
+      range.collapse(false);
+      var sel = window.getSelection();
+      sel?.removeAllRanges();
+      sel?.addRange(range);
+    } else if (typeof (document.body as any).createTextRange != 'undefined') {
+      var textRange = (document.body as any).createTextRange();
+      textRange.moveToElementText(el);
+      textRange.collapse(false);
+      textRange.select();
+    }
   }
 
   /**
@@ -414,7 +698,7 @@ export class ImagineInputComponent implements ControlValueAccessor, AfterViewIni
     //place cursor
     const lengthDifference = event.target.value.length - this.value.length;
 
-    this.input.nativeElement.setSelectionRange(
+    this.inputElement.nativeElement.setSelectionRange(
       this.caretPosition + lengthDifference,
       this.caretPosition + lengthDifference
     );
@@ -553,7 +837,7 @@ export class ImagineInputComponent implements ControlValueAccessor, AfterViewIni
       }
     }
 
-    this.input?.nativeElement.setSelectionRange(position, position);
+    this.inputElement?.nativeElement.setSelectionRange(position, position);
 
     return event.target.value;
   }
@@ -682,11 +966,6 @@ export class ImagineInputComponent implements ControlValueAccessor, AfterViewIni
   }
 
   /**
-   * place caret posiition
-   */
-  placeCursor(lastIndex: number) {}
-
-  /**
    * Unsubscribes
    */
   ngOnDestroy(): void {
@@ -695,6 +974,20 @@ export class ImagineInputComponent implements ControlValueAccessor, AfterViewIni
     }
     if (this.statusSub) {
       this.statusSub.unsubscribe();
+    }
+  }
+
+  /**
+   *
+   * @param event on mouse down event
+   */
+  @HostListener('document:mousedown', ['$event'])
+  clickoutAutoComplete(event: any) {
+    if (
+      !this.inputElement.nativeElement.contains(event.target) &&
+      !this.autocompleteContainer?.nativeElement.contains(event.target)
+    ) {
+      this.autocompleteConfig.show = false;
     }
   }
 }

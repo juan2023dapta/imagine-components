@@ -1,0 +1,75 @@
+<div>
+  <div class="label-container">
+    <label *ngIf="label !== ''">{{ label }}</label>
+    <ng-content select="[labelItem]"></ng-content>
+  </div>
+
+  <div class="text-area-container">
+    <textarea
+      [ngClass]="{
+        'outline-danger': invalid,
+        'outline-primary': !invalid
+      }"
+      [ngStyle]="{
+        'margin-top': label !== '' ? '10px' : '0',
+        background: 'var(--app-' + background + '-color)',
+        'border-color': readonly ? 'transparent' : '',
+        'outline-color': readonly ? 'transparent' : '',
+        height: height
+      }"
+      [readonly]="readonly"
+      [value]="value"
+      [disabled]="disable"
+      [placeholder]="placeholder"
+      (blur)="onTouch()"
+      (input)="onInput($event)"
+      autocomplete="on"></textarea>
+    <em
+      tooltip
+      *ngIf="invalid && messageErrorsType === 'tooltip'"
+      class="bx bx-error-circle"
+      [ngStyle]="{
+        'font-size': '25px',
+        'margin-left': '-40px',
+        'margin-top': '15px',
+        color: 'var(--app-danger-color)'
+      }">
+      <app-tooltip-content [width]="tooltipErrorWidth" [showOrigin]="tooltipErrorShowOrigin">
+        <ng-container inside *ngTemplateOutlet="errorValidators"></ng-container>
+      </app-tooltip-content>
+    </em>
+  </div>
+</div>
+<div *ngIf="messageErrorsType === 'classic' && invalid">
+  <ng-container *ngTemplateOutlet="errorValidators"></ng-container>
+</div>
+<ng-template #errorValidators>
+  <ng-container *ngFor="let error of errors">
+    <div [ngSwitch]="error">
+      <p *ngSwitchCase="'required'" class="msg-validator">{{ errorMessages[error] || fieldName + ' is required.' }}</p>
+      <p *ngSwitchCase="'minlength'" class="msg-validator">
+        {{
+          errorMessages[error] ||
+            fieldName + ' must have at least ' + controlErrors[error].requiredLength + ' characters.'
+        }}
+      </p>
+      <p *ngSwitchCase="'maxlength'" class="msg-validator">
+        {{
+          errorMessages[error] || fieldName + ' must have max ' + controlErrors[error].requiredLength + ' characters.'
+        }}
+      </p>
+      <p *ngSwitchCase="'emailMatch'" class="msg-validator">
+        {{ errorMessages[error] || 'Email format is invalid.' }}
+      </p>
+      <p *ngSwitchCase="'contains'" class="msg-validator">
+        {{ errorMessages[error] || 'Contains invalid values.' }}
+      </p>
+      <p *ngSwitchCase="'pattern'" class="msg-validator">
+        {{ errorMessages[error] || fieldName + " doesn't have a valid format." }}
+      </p>
+      <p *ngSwitchDefault class="msg-validator">
+        {{ errorMessages[error] || error + ' message not assigned.' }}
+      </p>
+    </div>
+  </ng-container>
+</ng-template>

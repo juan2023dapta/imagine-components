@@ -1,0 +1,65 @@
+
+
+.tableHead {
+  background-color: white;
+}
+.stickyHead{
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+tbody {
+  overflow: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  padding: 10px !important;
+}
+
+tr {
+  border-bottom: 0.5px solid var(--app-soft-gray-color);
+}
+
+.row-pointer:nth-child(n + 1) {
+  cursor: pointer;
+}
+
+.row-hover:nth-child(n + 1):hover {
+  background-color: var(--app-soft-gray-color);
+}
+
+th {
+  color: var(--app-dark-color);
+  text-align: start;
+  font-weight: bold;
+  margin: 0 10px;
+  padding: 20px 10px;
+}
+
+td {
+  padding: 20px 10px;
+  text-align: start;
+  color: var(--app-dark-color);
+  margin: 0 10px;
+}
+
+
+.skeleton-row{
+  visibility: collapse;
+}
+
+.skeleton{
+  background: linear-gradient(120deg, #e5e5e5 30%, #f0f0f0 38%, #f0f0f0 40%, #e5e5e5 48%);
+  background-size: 200% 100%;
+  background-position: 100% 0;
+  animation: load 2s infinite;
+  width: 100%;
+  border-radius: 20px;
+}
+@keyframes load {
+  100%{
+      background-position: -100% 0 ;
+  }
+}

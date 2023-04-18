@@ -1,11 +1,15 @@
 $selected-primary-color: var(--imagine-primary-color);
-$background-over-color: rgb(235, 234, 234);
+$selected-box-shadow-focus: var(--imagine-selected-background-color);
+$select-option-padding: var(--imagine-select-option-padding);
+$background-over-color: var(--imagine-selected-background-color);
+$select-text-color: var(--imagine-text-color);
 
-p {
-    padding: 10px;
-    border-bottom: 1px solid #ccc !important;
+
+.imagine-select-option{
+    padding: $select-option-padding;
     display: flex;
     justify-content: space-between;
+    color: $select-text-color;
     &:hover {
       background: $background-over-color;
     }
@@ -26,6 +30,11 @@ p {
   opacity: 0.5;
   cursor: none;
   pointer-events: none;
+}
+
+.selected{
+  background-color: $selected-box-shadow-focus;
+  color: $selected-primary-color;
 }
 
 .check-icon {

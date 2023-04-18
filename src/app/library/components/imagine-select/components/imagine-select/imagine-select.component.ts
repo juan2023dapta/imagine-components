@@ -557,8 +557,9 @@ export class ImagineSelectComponent
         this.selectItem({ item, preventOnTouch: true });
       }
     } else {
+      this.updateValueInChilds()
       this.valueChange.emit(this.value);
-      this.onChange(true);
+      this.onChange(this.value);
     }
   }
   /**

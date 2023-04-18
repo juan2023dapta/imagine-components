@@ -10,13 +10,13 @@
 <div class="imagine-select">
   <details #details (toggle)="onToggle($event)" [ngStyle]="_detailsStyles">
     <summary
+      [attr.state]="invalid ? 'invalid' : ''"
       [ngStyle]="summaryStyles"
       [ngClass]="{
         'outline-danger': invalid && !disable,
         'outline-primary': !invalid && !disable,
         'outline-disable': disable
-      }"
-    >
+      }">
       <div #startContent class="content">
         <ng-content select="[startContent]"></ng-content>
       </div>
@@ -24,34 +24,18 @@
         class="bx bx-x unselect-icon"
         (click)="reset()"
         *ngIf="
-          !disable &&
-          !readonly &&
-          canClearSelection &&
-          ((!multiple && value) || (multiple && value && value.length))
-        "
-      ></em>
-      <p
+          !disable && !readonly && canClearSelection && ((!multiple && value) || (multiple && value && value.length))
+        "></em>
+      <div
+        class="imagine-option-selected"
         [ngStyle]="{
-          opacity:
-            !value ||
-            value.length === 0 ||
-            disable ||
-            selectTextContent === defaultPlaceholder
-              ? 0.7
-              : 1,
+          opacity: !value || value.length === 0 || disable || selectTextContent === defaultPlaceholder ? 0.7 : 1,
           overflow: 'hidden',
           'white-space': 'nowrap'
-        }"
-      >
-        {{
-          !value || value.length === 0 ? defaultPlaceholder : selectTextContent
-        }}
-      </p>
-      <em
-        outside
-        class="select-icon"
-        *ngIf="!disable && !readonly && showToggleIcon"
-      ></em>
+        }">
+        {{ !value || value.length === 0 ? defaultPlaceholder : selectTextContent }}
+      </div>
+      <em outside class="select-icon" *ngIf="!disable && !readonly && showToggleIcon"></em>
       <div #endContent (click)="endContentClicked = true">
         <ng-content select="[endContent]"></ng-content>
       </div>
@@ -63,18 +47,11 @@
         [ngStyle]="{
           top:
             distanceToBottom <= 200
-              ? details.getBoundingClientRect().top -
-                listContainer.getBoundingClientRect().height +
-                5 +
-                'px'
-              : details.getBoundingClientRect().top +
-                details.getBoundingClientRect().height +
-                8 +
-                'px',
+              ? details.getBoundingClientRect().top - listContainer.getBoundingClientRect().height + 5 + 'px'
+              : details.getBoundingClientRect().top + details.getBoundingClientRect().height + 8 + 'px',
           width: details.getBoundingClientRect().width - 2 + 'px'
         }"
-        *ngIf="showOptions && !hideOptions && disable === false"
-      >
+        *ngIf="showOptions && !hideOptions && disable === false">
         <imagine-select-option *ngIf="noItems">No Items</imagine-select-option>
         <ng-content></ng-content>
       </div>
@@ -90,10 +67,10 @@
   <ng-container *ngFor="let error of errors">
     <ng-container [ngSwitch]="error">
       <p *ngSwitchCase="'required'" class="msg-validator">
-        {{ errorMessages[error] || fieldName + " is required." }}
+        {{ errorMessages[error] || fieldName + ' is required.' }}
       </p>
       <p *ngSwitchDefault class="msg-validator">
-        {{ errorMessages[error] || error + " message not assigned." }}
+        {{ errorMessages[error] || error + ' message not assigned.' }}
       </p>
     </ng-container>
   </ng-container>

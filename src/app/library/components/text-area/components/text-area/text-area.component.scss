@@ -1,0 +1,52 @@
+.label-container {
+  display: flex;
+  gap: 10px;
+}
+
+textarea {
+  margin-left: 1.7px;
+  width: 100%;
+  resize: none;
+  outline-color: #eaeaea;
+  border: 1px solid #eaeaea;
+  font-family: 'Rubik', sans-serif;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+textarea::-webkit-input-placeholder {
+  font-family: 'Rubik', sans-serif;
+  font-size: 16px;
+}
+
+textarea:-moz-placeholder {
+  font-family: 'Rubik', sans-serif;
+  font-size: 16px;
+}
+textarea::-moz-placeholder {
+  font-family: 'Rubik', sans-serif;
+  font-size: 16px;
+}
+textarea:-ms-placeholder {
+  font-family: 'Rubik', sans-serif;
+  font-size: 16px;
+}
+
+.msg-validator {
+  font-size: 14px;
+  color: var(--app-danger-color);
+  margin: 0;
+  margin-top: 5px;
+}
+
+.text-area-container {
+  display: flex;
+}
+
+.outline-danger {
+  outline: 2px solid var(--app-danger-color);
+}
+
+.outline-primary:focus {
+  outline: 2px solid var(--app-primary-color);
+}

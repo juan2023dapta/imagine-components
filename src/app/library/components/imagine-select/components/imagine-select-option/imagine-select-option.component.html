@@ -1,8 +1,7 @@
-<p
+<div
+  class="imagine-select-option"
   #optionContainer
   (click)="change()"
-  [ngClass]="{ hidden: hidden, backgroundOver: over, disable: disable }"
->
+  [ngClass]="{ hidden: hidden, backgroundOver: over, disable: disable, selected: selected }">
   <ng-content></ng-content>
-  <span *ngIf="selected" class="check-icon"></span>
-</p>
+</div>
