@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { ImagineInputDocumentationComponent } from './pages/imagine-input-documentation/imagine-input-documentation.component';
 import { ImagineSelectDocumentationComponent } from './pages/imagine-select-documentation/imagine-select-documentation.component';
 import { ImagineFormsDocumentationComponent } from './pages/imagine-forms-documentation/imagine-forms-documentation.component';
+import { ImagineDatePickerDocumentationComponent } from './pages/imagine-date-picker-documentation/imagine-date-picker-documentation.component';
 
 const routes: Routes = [
   {
@@ -16,6 +17,10 @@ const routes: Routes = [
   {
     path: 'select',
     component: ImagineSelectDocumentationComponent,
+  },
+  {
+    path: 'date-picker',
+    component: ImagineDatePickerDocumentationComponent,
   },
   {
     path: '**',

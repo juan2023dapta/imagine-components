@@ -20,6 +20,7 @@ import {
 import {
   ControlContainer,
   ControlValueAccessor,
+  FormControl,
   NG_VALUE_ACCESSOR,
   ValidationErrors,
 } from '@angular/forms';
@@ -38,9 +39,7 @@ import { Subscription } from 'rxjs';
     },
   ],
 })
-export class ImagineSelectComponent
-  implements OnInit, AfterViewInit, OnDestroy, ControlValueAccessor
-{
+export class ImagineSelectComponent implements OnInit, AfterViewInit, OnDestroy, ControlValueAccessor {
   /**Access the select option components*/
   @ContentChildren(ImagineSelectOptionComponent)
   content!: QueryList<ImagineSelectOptionComponent>;
@@ -51,6 +50,8 @@ export class ImagineSelectComponent
   @ViewChild('listContainer') listContainer!: ElementRef<HTMLUListElement>;
   /**Access to the label content container of the input like icons or images */
   @ViewChild('labelContent') labelContent!: ElementRef<HTMLElement>;
+  /**Access to the filter content container of the select*/
+  @ViewChild('filterContent') filterContent!: ElementRef<HTMLElement>;
 
   /**Tells the parent when value changes */
   @Output() valueChange = new EventEmitter();
@@ -105,6 +106,8 @@ export class ImagineSelectComponent
   @Input() itemsName = 'item';
   /**Reactive form control name */
   @Input() formControlName = '';
+  /**Reactive form control name */
+  @Input() formControl?: FormControl;
   /**Custom error messages to reactive forms validators */
   @Input() errorMessages: any = {};
   /**Flag to know if show error message inside component */
@@ -112,10 +115,14 @@ export class ImagineSelectComponent
   /**Stores errors of reactive form */
   @Input() errors: any[] = [];
   /**ng styles */
+  @Input() containerClass = '';
   @Input() summaryStyles = {};
   @Input() detailsStyles = {};
+  @Input() optionsStyles = {};
   /**Variable to show or hide select options from parent */
   @Input() hideOptions = false;
+  /**error messages class */
+  @Input() errorMessagesClass = '';
   /**Variable to show or hide select options */
   showOptions = false;
   /**Flag to set if there are items in the select or not */
@@ -141,6 +148,8 @@ export class ImagineSelectComponent
   itemSelectedDontExist = false;
   /**last value selected */
   lastValue = '';
+  /**no results on filter */
+  noResults = false;
 
   /**
    *
@@ -155,10 +164,23 @@ export class ImagineSelectComponent
   ) {}
 
   /**
+   * access form control
+   */
+  get inputFormControl() {
+    return this.controlContainer ? this.controlContainer?.control?.get(this.formControlName) : this.formControl;
+  }
+
+  /**
    * Detect if input has star content like icons or images
    */
   get labelContentExist() {
     return this.labelContent?.nativeElement.children.length > 0;
+  }
+  /**
+   * Detect if select has filter content
+   */
+  get filterContentExist() {
+    return this.filterContent?.nativeElement.children.length > 0;
   }
 
   get _detailsStyles() {
@@ -168,6 +190,30 @@ export class ImagineSelectComponent
       ...this.detailsStyles,
     };
   }
+
+  get optionsContainerSize() {
+    return {
+      width: this.details.nativeElement.getBoundingClientRect().width - 2 + 'px',
+    };
+  }
+
+  get optionsContainerStyle() {
+    return {
+      top:
+        this.distanceToBottom <= 200
+          ? this.details.nativeElement.getBoundingClientRect().top -
+            this.listContainer.nativeElement.getBoundingClientRect().height +
+            5 +
+            'px'
+          : this.details.nativeElement.getBoundingClientRect().top +
+            this.details.nativeElement.getBoundingClientRect().height +
+            8 +
+            'px',
+      ...this.optionsContainerSize,
+      ...this.optionsStyles,
+    };
+  }
+
   /**
    * get distance of the select to screen bottom
    */
@@ -184,8 +230,8 @@ export class ImagineSelectComponent
     return (
       this.showErrorMessages &&
       this.errors.length > 0 &&
-      this.controlContainer.control?.get(this.formControlName)?.invalid &&
-      this.controlContainer.control?.get(this.formControlName)?.touched
+      this.inputFormControl?.invalid &&
+      this.inputFormControl?.touched
     );
   }
 
@@ -281,27 +327,26 @@ export class ImagineSelectComponent
     if (action === 'add') {
       this.details.nativeElement.addEventListener('keydown', this.onNavigate);
     } else {
-      this.details.nativeElement.removeEventListener(
-        'keydown',
-        this.onNavigate
-      );
+      this.details.nativeElement.removeEventListener('keydown', this.onNavigate);
     }
   }
 
   onNavigate = (event: KeyboardEvent) => {
     if (this.details.nativeElement.open) {
-      if (event.key === 'ArrowDown') {
-        this.arrowDownPressedOnNavigate();
-      } else if (event.key === 'ArrowUp') {
-        this.arrowUpPressedOnNavigate();
-      } else if (event.key === 'Enter') {
-        this.content.forEach((item) => {
-          if (item.over) {
-            item.change();
-          }
-        });
+      if (event.key === 'ArrowDown' || event.key === 'ArrowUp' || event.key === 'Enter') {
+        if (event.key === 'ArrowDown') {
+          this.arrowDownPressedOnNavigate();
+        } else if (event.key === 'ArrowUp') {
+          this.arrowUpPressedOnNavigate();
+        } else if (event.key === 'Enter') {
+          this.content.forEach((item) => {
+            if (item.over) {
+              item.change();
+            }
+          });
+        }
+        event.preventDefault();
       }
-      event.preventDefault();
     }
   };
   /**
@@ -391,17 +436,13 @@ export class ImagineSelectComponent
     if (this.controlContainer) {
       this.setErrors();
 
-      this.valueSub = this.controlContainer.control
-        ?.get(this.formControlName)
-        ?.valueChanges.subscribe(() => {
-          this.setErrors();
-        });
+      this.valueSub = this.controlContainer.control?.get(this.formControlName)?.valueChanges.subscribe(() => {
+        this.setErrors();
+      });
 
-      this.statusSub = this.controlContainer.control
-        ?.get(this.formControlName)
-        ?.statusChanges.subscribe(() => {
-          this.setErrors();
-        });
+      this.statusSub = this.controlContainer.control?.get(this.formControlName)?.statusChanges.subscribe(() => {
+        this.setErrors();
+      });
     }
   }
 
@@ -409,17 +450,11 @@ export class ImagineSelectComponent
    * Set errors of the reactive form
    */
   setErrors() {
-    this.controlErrors = this.controlContainer.control?.get(
-      this.formControlName
-    )?.errors as any;
+    this.controlErrors = this.controlContainer.control?.get(this.formControlName)?.errors as any;
     if (!this.controlErrors) {
       if (this.value && this.itemSelectedDontExist) {
-        this.controlContainer.control
-          ?.get(this.formControlName)
-          ?.setErrors({ required: true });
-        this.controlErrors = this.controlContainer.control?.get(
-          this.formControlName
-        )?.errors as any;
+        this.controlContainer.control?.get(this.formControlName)?.setErrors({ required: true });
+        this.controlErrors = this.controlContainer.control?.get(this.formControlName)?.errors as any;
       }
     }
     if (this.controlErrors) {
@@ -443,14 +478,22 @@ export class ImagineSelectComponent
       this.noItems = true;
     } else {
       this.noItems = false;
+      let contentHasValue = false;
       this.content.forEach((element) => {
+        if (element.value === this.value) {
+          contentHasValue = true;
+        }
         element.multiple = this.multiple;
         const subscription = element.itemSelected.subscribe(() => {
           this.selectItem({ item: element, itemClicked: true });
         });
         this.itemsSelectedSub.push(subscription);
       });
-      this.selectItemByValue(this.value);
+      if (contentHasValue) {
+        this.selectItemByValue(this.value);
+      } else {
+        this.selectItem({ item: null, preventOnTouch: true });
+      }
     }
     this.changeDetectroRef.detectChanges();
   }
@@ -458,12 +501,7 @@ export class ImagineSelectComponent
   /**
    * Select an item an emit the value to the parent
    */
-  selectItem(data: {
-    item: any;
-    itemClicked?: boolean;
-    preventOnChange?: boolean;
-    preventOnTouch?: boolean;
-  }) {
+  selectItem(data: { item: any; itemClicked?: boolean; preventOnChange?: boolean; preventOnTouch?: boolean }) {
     const { item, itemClicked, preventOnChange, preventOnTouch } = data;
     if (itemClicked && item && item.value === this.value) {
       return;
@@ -547,9 +585,7 @@ export class ImagineSelectComponent
    */
   selectItemByValue(value: string) {
     if (!this.multiple) {
-      const item = this.content.find(
-        (itemObject) => value === itemObject.value
-      );
+      const item = this.content.find((itemObject) => value === itemObject.value);
       if (item) {
         if (this.lastValue && this.lastValue === item.value) {
           return;
@@ -557,7 +593,7 @@ export class ImagineSelectComponent
         this.selectItem({ item, preventOnTouch: true });
       }
     } else {
-      this.updateValueInChilds()
+      this.updateValueInChilds();
       this.valueChange.emit(this.value);
       this.onChange(this.value);
     }
@@ -577,8 +613,7 @@ export class ImagineSelectComponent
     this.focused = true;
     this.content.forEach((item, i) => {
       if (item.selected) {
-        if (this.listContainer)
-          this.listContainer.nativeElement.scrollTop = i * 39;
+        if (this.listContainer) this.listContainer.nativeElement.scrollTop = i * 39;
         this.indexItemSelected = i;
       }
     });
@@ -621,9 +656,7 @@ export class ImagineSelectComponent
   updateOptionsSelectionMultiple() {
     this.content?.forEach((element) => {
       if (this.multiple) {
-        const index = this.selectedItems.findIndex(
-          (item) => item.value === element.value
-        );
+        const index = this.selectedItems.findIndex((item) => item.value === element.value);
         if (this.value && this.value.includes(element.value)) {
           element.selected = true;
           if (index === -1) {
@@ -639,9 +672,7 @@ export class ImagineSelectComponent
           this.selectTextContent = this.defaultPlaceholder;
         } else {
           if (!this.showItemsCount) {
-            this.selectTextContent = this.selectedItems
-              .map((item) => item.textContentOption)
-              .join(', ');
+            this.selectTextContent = this.selectedItems.map((item) => item.textContentOption).join(', ');
           }
         }
         if (this.showItemsCount && this.value && this.value.length) {
@@ -678,6 +709,50 @@ export class ImagineSelectComponent
   /**close details native element */
   closeDetails() {
     this.details.nativeElement.removeAttribute('open');
+  }
+
+  /**
+   * Filter picker while writing
+   * @param inputValue string value tha emits the input
+   */
+  filterOptions(inputValue: string) {
+    if (this.usingPagination || this.disable || this.readonly) {
+      return;
+    }
+    if (!inputValue || inputValue === '') {
+      this.noResults = false;
+      for (const option of this.content) {
+        option.hidden = false;
+      }
+    } else {
+      let countResults = 0;
+      for (const option of this.content) {
+        if (option.textContentOption && !option.textContentOption.toLowerCase().includes(inputValue.toLowerCase())) {
+          option.hidden = true;
+        } else {
+          countResults++;
+          option.hidden = false;
+        }
+      }
+      if (countResults === 0) {
+        this.noResults = true;
+      } else {
+        this.noResults = false;
+        const optionMatch = this.content
+          .filter((option) => !option.hidden)
+          .find(
+            (option) => option.textContentOption && option.textContentOption.toLowerCase() === inputValue.toLowerCase()
+          );
+        if (optionMatch) {
+          if (this.multiple) {
+            this.selectItem({ item: optionMatch });
+          } else {
+            this.selectItem({ item: optionMatch });
+          }
+        }
+      }
+    }
+    this.showOptions = true;
   }
 
   /**

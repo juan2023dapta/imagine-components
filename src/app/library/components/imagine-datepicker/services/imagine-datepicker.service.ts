@@ -44,15 +44,18 @@ export class ImagineDatepickerService {
    * @param format date format string
    * @returns date formatted string
    */
-  dateFormat(date: string | Date, format: string) {
+  dateFormat(date: string | Date, format: string, showTimeDay = false) {
     if (date) {
       const dateObject = new Date(date);
       const second = `${dateObject.getSeconds()}`;
       const minute = `${dateObject.getMinutes()}`;
-      const hour = `${dateObject.getHours()}`;
       const month = `${dateObject.getMonth() + 1}`;
       const day = `${dateObject.getDate()}`;
       const year = dateObject.getFullYear();
+      let hour = `${dateObject.getHours()}`;
+      if (showTimeDay) {
+        hour = dateObject.getHours() <= 12 ? `${dateObject.getHours()}` : `${dateObject.getHours() - 12}`;
+      }
 
       return format
         .replace(/YYYY/g, year.toString())

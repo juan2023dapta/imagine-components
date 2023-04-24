@@ -21,6 +21,14 @@ export class DocumentationComponent implements OnInit {
           link: '/docs/forms/select',
           name: 'Select',
         },
+        {
+          link: '/docs/forms/date-picker',
+          name: 'Datepicker',
+        },
+        {
+          link: '/docs/forms/forms',
+          name: 'Forms',
+        },
       ],
     },
   ];

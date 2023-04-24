@@ -19,24 +19,32 @@
         'outline-primary': !invalid && !disable && !readonly
       }">
       <em class="bx bx-x unselect-icon" (click)="selectDate({ reset: true })" *ngIf="canClear && value"></em>
-      <span class="value-editable" *ngIf="!range && value && splittedFormat.length">
-        <ng-container *ngFor="let format of splittedFormat; let i = index">
-          <span #dateInput *ngIf="format" [innerText]="value | dateFormat : upperFormats[i] | titlecase"></span>
-          <span *ngIf="separators[i]">{{ separators[i] }}</span>
-        </ng-container>
-      </span>
-      <span class="value-editable" *ngIf="!range && !value">
+      <span class="value-editable" *ngIf="canWrite && !range && !value">
         <ng-container *ngFor="let format of splittedFormat; let i = index">
           <span #dateInput *ngIf="format">{{ format }}</span>
           <span *ngIf="separators[i]">{{ separators[i] }}</span>
         </ng-container>
       </span>
+      <span class="value-editable" *ngIf="canWrite && !range && value && splittedFormat.length">
+        <ng-container *ngFor="let format of splittedFormat; let i = index">
+          <span #dateInput *ngIf="format" [innerText]="value | dateFormat : upperFormats[i] | titlecase"></span>
+          <span *ngIf="separators[i]">{{ separators[i] }}</span>
+        </ng-container>
+      </span>
+      <span class="value-editable value-editable--placeholder" *ngIf="!canWrite && !range && !value">
+        {{ placeholder }}
+      </span>
+      <span class="value-editable" *ngIf="!canWrite && !range && value">
+        {{ value | dateFormat : dateFormat : hoursFormat === '12' }}
+        {{ datetimePicker && hoursFormat === '12' ? timeDay : '' }}
+      </span>
+
       <span *ngIf="range && value && (value[0] || value[1])">
         {{ value[0] | dateFormat : dateFormat }} - {{ value[1] | dateFormat : dateFormat }}
       </span>
       <span *ngIf="range && (!value || (!value[0] && !value[1]))" style="opacity: 0.7">From - To</span>
       <div class="end-icons">
-        <em class="bx bx-chevron-down select-icon" *ngIf="!disable && !readonly && showToggleIcon"></em>
+        <em class="select-icon" *ngIf="!disable && !readonly && showToggleIcon"></em>
         <em
           tooltip
           *ngIf="invalid && messageErrorsType === 'tooltip'"
@@ -50,9 +58,10 @@
         </div>
       </div>
     </summary>
-    <ul
+    <div
       class="dates"
       #listContainer
+      [ngClass]="{ 'dates--time-picker': datetimePicker && currentView === 'days' }"
       [ngStyle]="{
         top:
           distanceToBottom <= 200
@@ -61,18 +70,36 @@
         width: details.getBoundingClientRect().width - 2 + 'px'
       }"
       *ngIf="showCalendar">
-      <div class="month-year-container" *ngIf="currentView !== 'month' && currentView !== 'time'">
-        <div (click)="goPrev()" class="arrows prev-mth">
-          <em class="bx bx-chevron-left"></em>
+      <div class="month-year-container">
+        <div
+          (click)="goPrev()"
+          class="arrow-container"
+          [ngClass]="{ 'arrow-container--hidden': currentView === 'month' }">
+          <div class="arrow arrow--left"></div>
         </div>
-        <div class="month-year" (click)="currentView = currentView === 'year' ? 'days' : 'year'">
-          <span *ngIf="currentView === 'days'">{{ selectedMonth }}</span>
-          <span *ngIf="currentView === 'year'">
+
+        <div class="month-year">
+          <span
+            (click)="currentView === 'days' ? (currentView = 'month') : (currentView = 'days')"
+            *ngIf="currentView === 'days' || currentView === 'month'">
+            {{ currentMonth }}
+          </span>
+          <span
+            (click)="
+              currentView === 'days' || currentView === 'month' ? (currentView = 'year') : (currentView = 'days')
+            "
+            *ngIf="currentView === 'days' || currentView === 'month'">
+            {{ currentYear }}
+          </span>
+          <span *ngIf="currentView === 'year'" (click)="currentView = currentView === 'year' ? 'days' : 'year'">
             {{ calendarData.years[0] }} - {{ calendarData.years[calendarData.years.length - 1] }}
           </span>
         </div>
-        <div (click)="goNext()" class="arrows next-mth">
-          <em class="bx bx-chevron-right"></em>
+        <div
+          (click)="goNext()"
+          class="arrow-container"
+          [ngClass]="{ 'arrow-container--hidden': currentView === 'month' }">
+          <div class="arrow arrow--right"></div>
         </div>
       </div>
       <div class="years" *ngIf="currentView === 'year'">
@@ -125,20 +152,20 @@
               value &&
               currentDate.year === value[0]?.getFullYear() &&
               currentDate.month === value[0]?.getMonth() &&
-              day === value[0]?.getDate() + 1,
+              day === value[0]?.getDate(),
             'last-in-range':
               range &&
               value &&
               currentDate.year === value[1]?.getFullYear() &&
               currentDate.month === value[1]?.getMonth() &&
-              day === value[1]?.getDate() - 1,
+              day === value[1]?.getDate(),
             'in-range':
               range &&
               value &&
               day &&
-              ({ day: this.day, month: currentDate.month, year: currentDate.year } | buildDate).getTime() >
+              ({ day: this.day, month: currentDate.month, year: currentDate.year } | buildDate).getTime() >=
                 value[0]?.getTime() &&
-              ({ day: this.day, month: currentDate.month, year: currentDate.year } | buildDate).getTime() <
+              ({ day: this.day, month: currentDate.month, year: currentDate.year } | buildDate).getTime() <=
                 value[1]?.getTime(),
             'selected-item':
               (!range &&
@@ -161,73 +188,37 @@
           {{ day }}
         </div>
       </div>
-      <div class="hours" *ngIf="currentView === 'time'">
-        <div (click)="selectTime(details)" class="confirm-button">OK</div>
-        <div class="hour">
-          <p class="arrow arrow-up" (click)="scrollTime(hours, -70)">></p>
-          <div class="values-container" #hours>
-            <p
-              [ngClass]="{
-                'selected-item':
-                  (!range &&
-                    (value?.getHours() === i + 1 ||
-                      value?.getHours() - 12 === i + 1 ||
-                      value?.getHours() + 12 === i + 1)) ||
-                  (range &&
-                    (value[rangeClickedCount]?.getHours() === i + 1 ||
-                      value[rangeClickedCount]?.getHours() - 12 === i + 1 ||
-                      value[rangeClickedCount]?.getHours() + 12 === i + 1)),
-                'selected-time': currentDate.hour === i + 1
-              }"
-              (click)="currentDate.hour = i + 1"
-              *ngFor="let hour of [].constructor(12); let i = index">
-              {{ i + 1 < 10 ? '0' : '' }}{{ i + 1 }}
-            </p>
+
+      <div class="time-picker" *ngIf="!range && currentView === 'days' && this.datetimePicker">
+        <div class="time-picker__values">
+          <div class="arrow-container" (click)="setTime('+', 'hours')">
+            <div class="arrow arrow--up"></div>
           </div>
-          <p class="arrow arrow-down" (click)="scrollTime(hours, 70)">></p>
-        </div>
-        <div class="hour">
-          <p class="arrow arrow-up" (click)="scrollTime(minutes, -120)">></p>
-          <div class="values-container" #minutes>
-            <p
-              [ngClass]="{
-                'selected-item':
-                  (!range && value?.getMinutes() === i) ||
-                  (range && value[rangeClickedCount]?.getMinutes() === i) ||
-                  (range && value[rangeClickedCount]?.getMinutes() === i),
-                'selected-time': currentDate.minute === i
-              }"
-              (click)="currentDate.minute = i"
-              *ngFor="let minutes of [].constructor(60); let i = index">
-              {{ i < 10 ? '0' : '' }}{{ i }}
-            </p>
+          <div class="value">{{ currentHours }}</div>
+          <div class="arrow-container" (click)="setTime('-', 'hours')">
+            <div class="arrow arrow--down"></div>
           </div>
-          <p class="arrow arrow-down" (click)="scrollTime(minutes, 70)">></p>
         </div>
-        <div class="hour hour-periods">
-          <p
-            (click)="currentDate.period = 'AM'"
-            [ngClass]="{
-              'selected-item':
-                (!range && value?.getHours() >= 0 && value?.getHours() < 12) ||
-                (range && value[rangeClickedCount]?.getHours() >= 0 && value[rangeClickedCount]?.getHours() < 12),
-              'selected-time': currentDate.period === 'AM'
-            }">
-            AM
-          </p>
-          <p
-            (click)="currentDate.period = 'PM'"
-            [ngClass]="{
-              'selected-item':
-                (!range && !(value?.getHours() >= 0 && value?.getHours() < 12)) ||
-                (range && !(value[rangeClickedCount]?.getHours() >= 0 && value[rangeClickedCount]?.getHours() < 12)),
-              'selected-time': currentDate.period === 'PM'
-            }">
-            PM
-          </p>
+        <div class="time-picker__values">
+          <div class="arrow-container" (click)="setTime('+', 'minutes')">
+            <div class="arrow arrow--up"></div>
+          </div>
+          <div class="value">{{ currentMinutes }}</div>
+          <div class="arrow-container" (click)="setTime('-', 'minutes')">
+            <div class="arrow arrow--down"></div>
+          </div>
+        </div>
+        <div class="time-picker__values" *ngIf="hoursFormat === '12'">
+          <div class="arrow-container" (click)="setTime('+', 'time')">
+            <div class="arrow arrow--up"></div>
+          </div>
+          <div class="value">{{ timeDay }}</div>
+          <div class="arrow-container" (click)="setTime('-', 'time')">
+            <div class="arrow arrow--down"></div>
+          </div>
         </div>
       </div>
-    </ul>
+    </div>
   </details>
 </div>
 

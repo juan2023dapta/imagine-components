@@ -13,8 +13,18 @@ $select-font-size: var(--imagine-input-font-size);
     position: relative;
 }
 
+
+@mixin outlinePrimary{
+  outline: 1px solid $select-primary-color;
+  box-shadow: 0 0 0 0.3rem $select-box-shadow-focus;
+}
+
 .label-margin{
     margin-bottom: $select-label-distance;
+}
+
+.color-danger {
+  color: $select-danger-color;
 }
 
 .imagine-select{
@@ -23,10 +33,10 @@ $select-font-size: var(--imagine-input-font-size);
       width: 100%;
       margin: 0px;
       margin-right: 10px;
-      border: 1px solid $select-grey-color;
-      border-radius: 7px;
+      border-radius: 6px;
       margin-left: 1.7px;
       summary {
+        transition: box-shadow .2s, outline .5s;
         font-size: $select-font-size;
         color: $select-text-color;
         font-weight: normal;
@@ -38,6 +48,10 @@ $select-font-size: var(--imagine-input-font-size);
         align-items: center;
         padding-right: 10px;
         padding-left: 5px;
+        outline: 1px solid $select-grey-color;
+        &:hover{
+          outline: 1px solid $select-primary-color;
+        }
         .imagine-option-selected{
             flex-grow: 3;
         }
@@ -45,14 +59,34 @@ $select-font-size: var(--imagine-input-font-size);
             display: flex;
             justify-content: center;
             align-items: center;
-            &:nth-child(1){
-                margin-right: 5px;
+            &--start{
+              border-top-left-radius: 7px;
+              border-bottom-left-radius: 7px;
+            }
+            &--end{
+              border-top-right-radius: 7px;
+              border-bottom-right-radius: 7px;
             }
         }
       }
       
       summary::-webkit-details-marker {
         display: none;
+      }
+
+      summary[state="invalid"]{
+        outline: 1px solid $select-danger-color;
+        box-shadow: none;
+      }
+
+      
+      summary[state="valid"]{
+        &:hover{
+          outline: 1px solid $select-primary-color;
+        } 
+        &:focus{
+          @include outlinePrimary();
+        }
       }
 
       .options {
@@ -65,10 +99,16 @@ $select-font-size: var(--imagine-input-font-size);
         margin: -7px 0 0 0;
         box-sizing: border-box;
         border-radius: 5px;
-        max-height: 200px;
-        overflow-y: auto;
         z-index: 9999;
         animation: fadeIn 0.1s ease-in;
+        &__filter{
+          background-color: #f8f9fa;
+          padding: 0.75rem 1.25rem;
+        }
+        &__container{
+          max-height: 200px;
+          overflow-y: auto;
+        }
       }
 
       .end-icons {
@@ -77,9 +117,25 @@ $select-font-size: var(--imagine-input-font-size);
       }
       
       .unselect-icon{
-        font-size: 23px;
-        margin-left: -5px;
-        margin-right: 5px;
+        color: $select-dropdown-icon-color;
+        width: 14px;
+        height: 14px;
+        margin-right: 10px;
+        position: relative;
+        &:before, &:after {
+          position: absolute;
+          left: 0;
+          content: ' ';
+          height: 15px;
+          width: 1px;
+          background-color: $select-dropdown-icon-color;
+        }
+        &:before {
+          transform: rotate(45deg);
+        }
+        &:after {
+          transform: rotate(-45deg);
+        }
       }
       
     }
@@ -92,18 +148,24 @@ $select-font-size: var(--imagine-input-font-size);
       top: 0;
       left: 0;
     }
-    details[open] .select-icon {
-      transform: rotateZ(225deg);
-      margin-top: -3px;
+
+    details[open]{
+      summary[state="valid"]{
+        @include outlinePrimary();
+      }
     }
+    // details[open] .select-icon {
+    //   transform: rotateZ(225deg);
+    //   margin-top: -3px;
+    // }
     .select-icon {
         border-right: 2px solid; 
         border-bottom: 2px solid;
         height: 10px;
         width: 10px;
         transform: rotate(45deg);
-        margin-right: 5px;
-        margin-top: -5px;
+        margin-right: 10px;
+        margin-top: -3px;
         border-radius: 2px;
         border-color: $select-dropdown-icon-color;
     }
@@ -116,23 +178,15 @@ $select-font-size: var(--imagine-input-font-size);
     margin: 0;
     margin-top: 5px;
   }
-  
-  .outline-danger {
-    outline: 2px solid $select-danger-color;
-  }
-  
-  .outline-disable {
-    outline: 1px solid $select-grey-color;
-  }
-  
-  .outline-primary:focus {
-    outline: 2px solid $select-primary-color;
-    outline: 1px solid  $select-primary-color;
-    box-shadow: 0 0 0 0.2rem $select-box-shadow-focus;
-  }
 
+.outline-disable {
+  outline: 1px solid $select-grey-color;
+}    
 
-   .outline-primary[state="invalid"]{
-       box-shadow: none;
-    }
-  
+.error-message{
+  color: $select-danger-color;
+  &--absolute{
+      position: absolute;
+      bottom: -17px;
+  }
+}

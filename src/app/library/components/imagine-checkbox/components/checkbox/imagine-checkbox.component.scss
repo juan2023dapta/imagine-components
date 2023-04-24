@@ -11,7 +11,7 @@
     --disabled-inner: #E1E6F9;
     -webkit-appearance: none;
     -moz-appearance: none;
-    height: 21px;
+    height: 22px;
     outline: none;
     display: inline-block;
     vertical-align: top;
@@ -59,7 +59,7 @@
       box-shadow: 0 0 0 var(--focus);
     }
     &:not(.switch) {
-      width: 21px;
+      width: 22px;
       &:after {
         opacity: var(--o, 0);
       }
@@ -81,12 +81,12 @@
       border-radius: 7px;
       &:after {
         width: 5px;
-        height: 9px;
+        height: 11px;
         border: 2px solid var(--active-inner);
         border-top: 0;
         border-left: 0;
         left: 7px;
-        top: 4px;
+        top: 2px;
         transform: rotate(var(--r, 20deg));
       }
       &:checked {

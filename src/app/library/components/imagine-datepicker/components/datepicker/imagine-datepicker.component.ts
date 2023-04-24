@@ -81,6 +81,12 @@ export class ImagineDatepickerComponent implements OnInit, AfterViewInit, OnDest
   @Input() formControlName = '';
   /**date format */
   @Input() dateFormat = 'MM/DD/YYYY';
+  /**can write */
+  @Input() canWrite = false;
+  /**can write */
+  @Input() hoursFormat: '24' | '12' = '12';
+  /**placeholder */
+  @Input() placeholder = 'Select Date';
   /**date format */
   splittedFormat: string[] = [];
   /**upper formats to check in date formatter */
@@ -131,8 +137,8 @@ export class ImagineDatepickerComponent implements OnInit, AfterViewInit, OnDest
   };
   /**initial year selected */
   initialYear!: number;
-  /**selected month */
-  selectedMonth!: string;
+  /**selected month and year */
+  selectedMonthYear!: string;
   /**flag to know if end content has been clciked */
   endContentClicked = false;
   /**to konw how many days are in current month */
@@ -189,6 +195,52 @@ export class ImagineDatepickerComponent implements OnInit, AfterViewInit, OnDest
    */
   get datetimePicker() {
     return this.dateFormat.includes('HH:mm');
+  }
+
+  /**
+   * date for time
+   */
+  get defaultDateForTime() {
+    return this.value ? this.value : new Date();
+  }
+
+  /**
+   * gets the calendar time in am or pm
+   */
+  get timeDay() {
+    const hours = this.defaultDateForTime.getHours();
+    return hours === 12 ? 'PM' : hours === 0 ? 'AM' : hours > 12 ? 'PM' : 'AM';
+  }
+
+  /**
+   * get current hours
+   */
+  get currentHours() {
+    const date = this.defaultDateForTime;
+    const hours =
+      date.getHours() <= 12 ? date.getHours() : this.hoursFormat === '12' ? date.getHours() - 12 : date.getHours();
+    return hours < 10 ? '0' + hours : hours;
+  }
+
+  /**
+   * get current minutes
+   */
+  get currentMinutes() {
+    const date = this.defaultDateForTime;
+    let minutes = date.getMinutes() + '';
+    minutes = date.getMinutes() < 10 ? '0' + minutes : minutes;
+    return minutes;
+  }
+
+  /**
+   * get current month
+   */
+  get currentMonth() {
+    return this.selectedMonthYear.split(' ')[0];
+  }
+
+  get currentYear() {
+    return this.selectedMonthYear.split(' ')[1];
   }
 
   /**
@@ -579,14 +631,9 @@ export class ImagineDatepickerComponent implements OnInit, AfterViewInit, OnDest
       this.value = value;
       if (this.value) {
         this.value = new Date(value);
-        this.value = new Date(
-          this.value.getUTCFullYear(),
-          this.value.getUTCMonth(),
-          this.value.getUTCDate(),
-          this.value.getUTCHours(),
-          this.value.getUTCMinutes(),
-          this.value.getUTCSeconds()
-        );
+        this.setSelectedMonth(this.value);
+        this.initialYear = this.currentDate.year;
+        this.setAmountYears();
       }
     } else {
       this.value = value;
@@ -597,6 +644,8 @@ export class ImagineDatepickerComponent implements OnInit, AfterViewInit, OnDest
         this.rangeClickedCount = 0;
       }
       this.setSelectedMonth(this.value[0] ? this.value[0] : new Date());
+      this.initialYear = this.currentDate.year;
+      this.setAmountYears();
     }
   }
 
@@ -622,8 +671,33 @@ export class ImagineDatepickerComponent implements OnInit, AfterViewInit, OnDest
     this.currentDate.month = date.getMonth();
     this.currentDate.year = date.getFullYear();
 
-    this.selectedMonth = this.calendarData.months[this.currentDate.month] + ' ' + this.currentDate.year.toString();
+    this.selectedMonthYear = this.calendarData.months[this.currentDate.month] + ' ' + this.currentDate.year.toString();
     this.setAmountDays();
+  }
+
+  /**
+   * set time
+   */
+  setTime(operation: '+' | '-', attribute: 'minutes' | 'hours' | 'time', datePositionInRange?: 0 | 1) {
+    if (!this.range) {
+      const operationValue = operation === '+' ? +1 : -1;
+      if (!this.value) {
+        this.value = new Date();
+      }
+      if (attribute === 'hours') {
+        this.value.setHours(this.value.getHours() + operationValue);
+      } else if (attribute === 'minutes') {
+        this.value.setMinutes(this.value.getMinutes() + operationValue);
+      } else if (attribute === 'time') {
+        if ((this.timeDay === 'PM' && operation === '+') || (this.timeDay === 'AM' && operation === '-')) {
+          return;
+        }
+        const dayValue = operation === '+' ? +12 : -12;
+        this.value.setHours(this.value.getHours() + dayValue);
+      }
+    } else {
+    }
+    this.selectDate({ date: this.value });
   }
 
   /**
@@ -659,7 +733,7 @@ export class ImagineDatepickerComponent implements OnInit, AfterViewInit, OnDest
   goPrev() {
     if (this.currentView === 'days') {
       this.goToPrevMonth();
-    } else {
+    } else if (this.currentView === 'year') {
       this.goToPrevYears();
     }
   }
@@ -696,7 +770,7 @@ export class ImagineDatepickerComponent implements OnInit, AfterViewInit, OnDest
       this.currentDate.month = 11;
       this.currentDate.year--;
     }
-    this.selectedMonth = this.calendarData.months[this.currentDate.month] + ' ' + this.currentDate.year;
+    this.selectedMonthYear = this.calendarData.months[this.currentDate.month] + ' ' + this.currentDate.year;
     this.setAmountDays();
   }
   /**
@@ -708,7 +782,7 @@ export class ImagineDatepickerComponent implements OnInit, AfterViewInit, OnDest
       this.currentDate.month = 0;
       this.currentDate.year++;
     }
-    this.selectedMonth = this.calendarData.months[this.currentDate.month] + ' ' + this.currentDate.year;
+    this.selectedMonthYear = this.calendarData.months[this.currentDate.month] + ' ' + this.currentDate.year;
     this.setAmountDays();
   }
 
@@ -752,7 +826,7 @@ export class ImagineDatepickerComponent implements OnInit, AfterViewInit, OnDest
       return;
     }
     if (!this.range) {
-      if (details) details.removeAttribute('open');
+      if (this.currentView !== 'days') if (details) details.removeAttribute('open');
       this.value = new Date(year, month, day, hour, minute, sec, 0);
       this.onTouch();
       this.onChange(this.value);
@@ -798,21 +872,8 @@ export class ImagineDatepickerComponent implements OnInit, AfterViewInit, OnDest
   selectDay(data: { day: any; details?: any }) {
     const { day, details } = data;
     this.currentDate.day = day;
-    console.log(this.datetimePicker);
 
-    if (this.datetimePicker) {
-      this.currentView = 'time';
-      setTimeout(() => {
-        if (this.hoursContainer.nativeElement && this.minutesContainer) {
-          const selectedHours = this.hoursContainer.nativeElement.querySelector('.selected-item');
-          const selectedMinutes = this.minutesContainer.nativeElement.querySelector('.selected-item');
-          if (selectedHours) selectedHours.scrollIntoView();
-          if (selectedMinutes) selectedMinutes.scrollIntoView();
-        }
-      }, 0);
-    } else {
-      this.selectDate({ day, details });
-    }
+    this.selectDate({ day, details });
   }
   /**select month */
   selectMonth(index: number) {

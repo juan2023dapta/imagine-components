@@ -11,12 +11,14 @@ import { ImagineButtonModule } from '../library/components/imagine-button/imagin
 import { ImagineTooltipModule } from '../library/components/imagine-tooltip/imagine-tooltip.module';
 import { ImagineFormsDocumentationComponent } from './pages/imagine-forms-documentation/imagine-forms-documentation.component';
 import { ImagineDatepickerModule } from '../library/components/imagine-datepicker/imagine-datepicker.module';
+import { ImagineDatePickerDocumentationComponent } from './pages/imagine-date-picker-documentation/imagine-date-picker-documentation.component';
 
 @NgModule({
   declarations: [
     ImagineInputDocumentationComponent,
     ImagineSelectDocumentationComponent,
     ImagineFormsDocumentationComponent,
+    ImagineDatePickerDocumentationComponent,
   ],
   imports: [
     CommonModule,

@@ -1,4 +1,4 @@
-<div [ngClass]="{ 'label-margin': !!label || labelContentExist }">
+<div [ngClass]="{ 'label-margin': !!label || labelContentExist, 'color-danger': invalid }">
   <label>
     <span *ngIf="!labelContentExist">{{ label }}</span>
     <span #labelContent>
@@ -6,26 +6,18 @@
     </span>
   </label>
 </div>
-
 <div class="imagine-select">
   <details #details (toggle)="onToggle($event)" [ngStyle]="_detailsStyles">
     <summary
-      [attr.state]="invalid ? 'invalid' : ''"
+      [attr.state]="invalid ? 'invalid' : 'valid'"
       [ngStyle]="summaryStyles"
+      [class]="containerClass"
       [ngClass]="{
-        'outline-danger': invalid && !disable,
-        'outline-primary': !invalid && !disable,
         'outline-disable': disable
       }">
-      <div #startContent class="content">
+      <div #startContent class="content content--start">
         <ng-content select="[startContent]"></ng-content>
       </div>
-      <em
-        class="bx bx-x unselect-icon"
-        (click)="reset()"
-        *ngIf="
-          !disable && !readonly && canClearSelection && ((!multiple && value) || (multiple && value && value.length))
-        "></em>
       <div
         class="imagine-option-selected"
         [ngStyle]="{
@@ -35,8 +27,14 @@
         }">
         {{ !value || value.length === 0 ? defaultPlaceholder : selectTextContent }}
       </div>
+      <em
+        class="unselect-icon"
+        (click)="reset()"
+        *ngIf="
+          !disable && !readonly && canClearSelection && ((!multiple && value) || (multiple && value && value.length))
+        "></em>
       <em outside class="select-icon" *ngIf="!disable && !readonly && showToggleIcon"></em>
-      <div #endContent (click)="endContentClicked = true">
+      <div #endContent (click)="endContentClicked = true" class="content content--end">
         <ng-content select="[endContent]"></ng-content>
       </div>
     </summary>
@@ -44,34 +42,31 @@
       <div
         class="options"
         #listContainer
-        [ngStyle]="{
-          top:
-            distanceToBottom <= 200
-              ? details.getBoundingClientRect().top - listContainer.getBoundingClientRect().height + 5 + 'px'
-              : details.getBoundingClientRect().top + details.getBoundingClientRect().height + 8 + 'px',
-          width: details.getBoundingClientRect().width - 2 + 'px'
-        }"
+        [ngStyle]="optionsContainerStyle"
         *ngIf="showOptions && !hideOptions && disable === false">
-        <imagine-select-option *ngIf="noItems">No Items</imagine-select-option>
-        <ng-content></ng-content>
+        <div [ngClass]="{ options__filter: filterContentExist }" class="options__filter" #filterContent>
+          <ng-content select="[filter]"></ng-content>
+        </div>
+        <div class="options__container">
+          <imagine-select-option *ngIf="noItems || (noResults && !noItems)">No results found</imagine-select-option>
+          <ng-content></ng-content>
+        </div>
       </div>
     </div>
   </details>
 </div>
 
-<div *ngIf="messageErrorsType === 'classic' && invalid">
-  <ng-container *ngTemplateOutlet="errorValidators"></ng-container>
-</div>
+<ng-container *ngIf="invalid && errors && errors.length">
+  <ng-container *ngTemplateOutlet="errorMessagesTemplate"></ng-container>
+</ng-container>
 
-<ng-template #errorValidators>
-  <ng-container *ngFor="let error of errors">
-    <ng-container [ngSwitch]="error">
-      <p *ngSwitchCase="'required'" class="msg-validator">
-        {{ errorMessages[error] || fieldName + ' is required.' }}
-      </p>
-      <p *ngSwitchDefault class="msg-validator">
-        {{ errorMessages[error] || error + ' message not assigned.' }}
-      </p>
-    </ng-container>
+<ng-template #errorMessagesTemplate>
+  <ng-container [ngSwitch]="errors[0]">
+    <small *ngSwitchCase="'required'" [class]="'error-message ' + errorMessagesClass">
+      {{ errorMessages[errors[0]] || fieldName + ' is required.' }}
+    </small>
+    <small *ngSwitchDefault [class]="'error-message ' + errorMessagesClass">
+      {{ errorMessages[errors[0]] || errors[0] + ' message not assigned.' }}
+    </small>
   </ng-container>
 </ng-template>

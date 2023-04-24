@@ -16,7 +16,7 @@ export class ImagineDateFormatPipe implements PipeTransform {
    * @param format date string format
    * @returns date formatted
    */
-  transform(value: string | Date, format: string) {
-    return this.datePickerService.dateFormat(value, format);
+  transform(value: string | Date, format: string, showTimeDay = false) {
+    return this.datePickerService.dateFormat(value, format, showTimeDay);
   }
 }
