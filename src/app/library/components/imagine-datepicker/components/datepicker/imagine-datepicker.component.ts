@@ -18,21 +18,21 @@ import {
 } from '@angular/core';
 import { ControlContainer, NG_VALUE_ACCESSOR, ValidationErrors } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { DatepickerService } from '../../services/datepicker.service';
+import { ImagineDatepickerService } from '../../services/imagine-datepicker.service';
 
 @Component({
-  selector: 'app-datepicker',
-  templateUrl: './datepicker.component.html',
-  styleUrls: ['./datepicker.component.scss'],
+  selector: 'imagine-datepicker',
+  templateUrl: './imagine-datepicker.component.html',
+  styleUrls: ['./imagine-datepicker.component.scss'],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => DatepickerComponent),
+      useExisting: forwardRef(() => ImagineDatepickerComponent),
       multi: true,
     },
   ],
 })
-export class DatepickerComponent implements OnInit, AfterViewInit, OnDestroy {
+export class ImagineDatepickerComponent implements OnInit, AfterViewInit, OnDestroy {
   /**access input date native element of the date picker */
   @ViewChildren('dateInput') dateInputs!: QueryList<ElementRef<HTMLDetailsElement>>;
   /**access details native element of the date picker */
@@ -146,7 +146,7 @@ export class DatepickerComponent implements OnInit, AfterViewInit, OnDestroy {
    */
   constructor(
     @Optional() @Host() @SkipSelf() public controlContainer: ControlContainer,
-    public datepickerService: DatepickerService,
+    public datepickerService: ImagineDatepickerService,
     private elementRef: ElementRef
   ) {
     this.calendarData.months = this.datepickerService.months;

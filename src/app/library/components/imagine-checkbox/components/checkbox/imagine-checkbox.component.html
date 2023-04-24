@@ -1,0 +1,13 @@
+<div [ngStyle]="{ opacity: disable ? '0.5' : '1', 'pointer-events': disable || readonly ? 'none' : 'auto' }">
+  <input
+    #checkbox
+    [disabled]="disable"
+    [readonly]="readonly"
+    [id]="checkboxId"
+    type="checkbox"
+    (change)="toggleCheckbox()"
+    [checked]="value" />
+  <label [for]="checkboxId">
+    <ng-content></ng-content>
+  </label>
+</div>

@@ -9,10 +9,15 @@ import { ImagineInputModule } from '../library/components/imagine-input/imagine-
 import { ImagineSelectModule } from '../library/components/imagine-select/imagine-select.module';
 import { ImagineButtonModule } from '../library/components/imagine-button/imagine-button.module';
 import { ImagineTooltipModule } from '../library/components/imagine-tooltip/imagine-tooltip.module';
-import { DatepickerModule } from '../library/components/datepicker/datepicker.module';
+import { ImagineFormsDocumentationComponent } from './pages/imagine-forms-documentation/imagine-forms-documentation.component';
+import { ImagineDatepickerModule } from '../library/components/imagine-datepicker/imagine-datepicker.module';
 
 @NgModule({
-  declarations: [ImagineInputDocumentationComponent, ImagineSelectDocumentationComponent],
+  declarations: [
+    ImagineInputDocumentationComponent,
+    ImagineSelectDocumentationComponent,
+    ImagineFormsDocumentationComponent,
+  ],
   imports: [
     CommonModule,
     FormsDocumentationRoutingModule,
@@ -21,7 +26,7 @@ import { DatepickerModule } from '../library/components/datepicker/datepicker.mo
     ReactiveFormsModule,
     ImagineButtonModule,
     ImagineTooltipModule,
-    DatepickerModule,
+    ImagineDatepickerModule,
   ],
 })
 export class FormsDocumentationModule {}

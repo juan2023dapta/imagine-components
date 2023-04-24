@@ -1,15 +1,15 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { DatepickerService } from '../services/datepicker.service';
+import { ImagineDatepickerService } from '../services/imagine-datepicker.service';
 
 @Pipe({
   name: 'dateFormat',
 })
-export class DateFormatPipe implements PipeTransform {
+export class ImagineDateFormatPipe implements PipeTransform {
   /**
    *
    * @param datePickerService date picker service to share methods
    */
-  constructor(private datePickerService: DatepickerService) {}
+  constructor(private datePickerService: ImagineDatepickerService) {}
   /**
    * formats date according to the format
    * @param value date string to format
