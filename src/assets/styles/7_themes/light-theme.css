@@ -1,0 +1,23 @@
+:root {
+  --imagine-font-family: 'Rubik', sans-serif;
+  --imagine-primary-color: #f79e55;
+  --imagine-primary-low-color: #f1d1b7;
+  --imagine-primary-low-second-color: #f5e2d2;
+  --imagine-light-color: #fff;
+  --imagine-dark-color: #000;
+  --imagine-grey-color: #bbbbbd;
+  --imagine-danger-color: #df2e34;
+  --imagine-success-color: #51d082;
+  --imagine-warning-color: #ffb818;
+  --imagine-text-color: #495057;
+  --imagine-danger-low-color: #f7cbd2;
+  --imagine-success-low-color: #eff7f5;
+  --imagine-warning-color: #ffb818;
+  --imagine-text-color: #495057;
+
+  --imagine-input-box-shadow-focus: #f1d1b7;
+  --imagine-background-color: #ffff;
+  --imagine-background-color-secondary: #f8f9fa;
+  --imagine-background-color-hover: #bcbec4;
+  --imagine-border-color: var(--imagine-grey-color);
+}

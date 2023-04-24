@@ -1,0 +1,22 @@
+:root {
+  --imagine-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif,
+    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+  --imagine-primary-color: #3b82f6;
+  --imagine-primary-low-color: #b4d5fd;
+  --imagine-primary-low-second-color: #e1ecfa;
+  --imagine-light-color: #fff;
+  --imagine-dark-color: #000;
+  --imagine-grey-color: #ced4da;
+  --imagine-light-grey-color: #f7f9fc;
+  --imagine-danger-color: #df2e34;
+  --imagine-danger-low-color: #f7cbd2;
+  --imagine-success-color: #22c55e;
+  --imagine-success-low-color: #eff7f5;
+  --imagine-warning-color: #ffb818;
+  --imagine-text-color: #495057;
+  --imagine-input-box-shadow-focus: #bfdbfe;
+  --imagine-background-color: #ffff;
+  --imagine-background-color-secondary: #f8f9fa;
+  --imagine-background-color-hover: #bcbec4;
+  --imagine-border-color: var(--imagine-grey-color);
+}
