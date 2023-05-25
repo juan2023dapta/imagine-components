@@ -1,0 +1,130 @@
+$toast-success-background: #E4F8F0;
+$toast-success-color: #1EA97C;
+$toast-danger-background: #FFE7E6;
+$toast-danger-color: #FF5757;
+$toast-light-background: #FFFF;
+
+
+.wrapper {
+  width: 100%;
+  max-width: 380px;
+  position: fixed;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+  background-color: $toast-light-background;
+  border-radius: 10px;
+}
+
+.imagine-toast {
+  width: 100%;
+  min-height: 70px;
+  padding: 20px;
+  display: grid;
+  grid-template-columns: 1.3fr 6fr 0.5fr;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
+  gap: 10px;
+  border-left: 8px solid transparent;
+  border-radius: 6px;
+  &--success{
+    background-color: $toast-success-background;
+    color: $toast-success-color;
+    border-color: $toast-success-color;
+  }
+  &--danger{
+    background-color: $toast-danger-background;
+    color: $toast-danger-color;
+    border-color: $toast-danger-color;
+
+  }
+  &__icon{
+    &--success{
+      color: $toast-success-color;
+    }
+    &--danger{
+      color: $toast-danger-color;
+    }
+  }
+  &__button {
+    align-self: flex-start;
+    background-color: transparent;
+    border: none;
+    font-size: 25px;
+    line-height: 0;
+    cursor: pointer;
+  }
+}
+
+.container-1 em {
+  font-size: 50px;
+}
+
+.container-1,
+.container-2 {
+  align-self: center;
+}
+
+.container-2 p:first-child {
+  font-size: 20px;
+  font-weight: bold;
+  line-height: 3px;
+  margin-top: 5px;
+}
+
+.container-2 p:last-child {
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.toastFadeOut {
+  animation: toastFadeOut 0.2s ease-out;
+  animation-fill-mode: forwards;
+}
+
+@keyframes toastFadeOut {
+  0% {
+    opacity: 1;
+    bottom: 0%;
+  }
+  100% {
+    opacity: 0;
+    bottom: -10%;
+  }
+}
+
+.toastFadeIn {
+  animation: toastFadeIn 0.2s ease-in;
+  animation-fill-mode: forwards;
+}
+
+@keyframes toastFadeIn {
+  0% {
+    opacity: 0;
+    bottom: -10%;
+  }
+  100% {
+    opacity: 1;
+    bottom: 0%;
+  }
+}
+$spinner-color: var(--imagine-primary-color);
+
+.loader {
+  width: 38px;
+  height: 38px;
+  border: 5px solid #FFF;
+  border-bottom-color: $spinner-color;
+  border-radius: 50%;
+  display: inline-block;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+  }
+
+    @keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+    } 

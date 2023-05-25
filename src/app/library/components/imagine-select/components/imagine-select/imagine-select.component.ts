@@ -191,28 +191,16 @@ export class ImagineSelectComponent implements OnInit, AfterViewInit, OnDestroy,
     };
   }
 
-  get optionsContainerSize() {
-    return {
-      width: this.details.nativeElement.getBoundingClientRect().width - 2 + 'px',
-    };
-  }
+  optionsContainerSize = {
+    width: '0px',
+  };
 
-  get optionsContainerStyle() {
-    return {
-      top:
-        this.distanceToBottom <= 200
-          ? this.details.nativeElement.getBoundingClientRect().top -
-            this.listContainer.nativeElement.getBoundingClientRect().height +
-            5 +
-            'px'
-          : this.details.nativeElement.getBoundingClientRect().top +
-            this.details.nativeElement.getBoundingClientRect().height +
-            8 +
-            'px',
-      ...this.optionsContainerSize,
-      ...this.optionsStyles,
-    };
-  }
+  optionsContainerStyle = {
+    top: '0px',
+    opacity: '0',
+    ...this.optionsContainerSize,
+    ...this.optionsStyles,
+  };
 
   /**
    * get distance of the select to screen bottom
@@ -604,6 +592,7 @@ export class ImagineSelectComponent implements OnInit, AfterViewInit, OnDestroy,
    * @returns
    */
   onToggle(event: any) {
+    this.optionsContainerStyle.opacity = '0';
     if (this.readonly || this.disable || this.endContentClicked) {
       this.showOptions = false;
       this.closeDetails();
@@ -620,11 +609,42 @@ export class ImagineSelectComponent implements OnInit, AfterViewInit, OnDestroy,
     if (event.target.open) {
       this.showOptions = true;
       this.toggleListeners('add');
+      setTimeout(() => {
+        this.setOptionsContainerStyle();
+      }, 0);
     } else {
       this.showOptions = false;
       this.toggleListeners('remove');
     }
     this.toggleChange.emit(this.showOptions);
+  }
+
+  /**
+   * set options container style
+   */
+  setOptionsContainerStyle() {
+    this.optionsContainerSize.width = this.details.nativeElement.getBoundingClientRect().width + 'px';
+    this.optionsContainerStyle = {
+      top:
+        this.distanceToBottom <= 200
+          ? this.details.nativeElement.getBoundingClientRect().top -
+              this.listContainer.nativeElement.getBoundingClientRect().height >
+            0
+            ? this.details.nativeElement.getBoundingClientRect().top -
+              this.listContainer.nativeElement.getBoundingClientRect().height +
+              'px'
+            : this.details.nativeElement.getBoundingClientRect().top -
+              this.listContainer.nativeElement.getBoundingClientRect().height +
+              this.listContainer.nativeElement.getBoundingClientRect().height / 2 +
+              'px'
+          : this.details.nativeElement.getBoundingClientRect().top +
+            this.details.nativeElement.getBoundingClientRect().height +
+            8 +
+            'px',
+      opacity: '1',
+      ...this.optionsContainerSize,
+      ...this.optionsStyles,
+    };
   }
 
   /**

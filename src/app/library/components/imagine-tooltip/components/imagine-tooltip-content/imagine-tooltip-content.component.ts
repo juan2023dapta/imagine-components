@@ -24,7 +24,22 @@ export class ImagineTooltipContentComponent {
   @Input() boxShadow = true;
   @Input() maxHeightContent = '100px';
   @Input() heightContent = 'max-content';
+  @Input() tooltipClass = '';
+  @Input() tooltipStyle = {};
 
   /**flag to know if tooltip was opened on click */
   openedOnClick = false;
+
+  get ngStyle() {
+    return {
+      left: this.left,
+      width: this.width,
+      top: this.top,
+      ...this.tooltipStyle,
+    };
+  }
+
+  hideTooltip() {
+    this.showTooltip = false;
+  }
 }

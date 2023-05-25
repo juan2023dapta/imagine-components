@@ -1,8 +1,8 @@
 <button
   (click)="onClick($event)"
-  [ngClass]="{ 'button-hover': !disable && buttonHover, disabled: disable }"
-  [class]="'imagine-button ' + backgroundClass + ' ' + textColorClass"
-  [ngStyle]="buttonStyle"
->
+  [ngClass]="{ 'button-hover': !disable && buttonHover, disabled: useDisableClass && disable }"
+  [disabled]="disable"
+  [class]="'imagine-button ' + backgroundClass + ' ' + textColorClass + ' ' + buttonClass"
+  [ngStyle]="buttonStyle">
   <ng-content></ng-content>
 </button>

@@ -95,14 +95,14 @@ details[open] .select-icon {
     border-radius: 5px;
     overflow-y: auto;
     z-index: 9999;
-    animation: fadeIn 0.1s ease-in;
     min-width: 250px;
+    height: 270px;
+    transition: opacity 0.3s ease-out;
     &--time-picker{
-      height: 350px;
+      height: 310px;
     }
   }
   .month-year-container{
-    margin: 7px 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -235,7 +235,6 @@ details[open] .select-icon {
   
   .time-picker{
      padding-top: 5px;
-     margin-top: 5px;
      display: flex;
      justify-content: center;
      gap: 20px;
@@ -257,7 +256,7 @@ details[open] .select-icon {
       align-items: center;
       justify-content: center;
       border-radius: 10px;
-      height: 20px;
+      height: 10px;
       width: 20px;
       &:hover{
         background-color: #e6e6e6 ;

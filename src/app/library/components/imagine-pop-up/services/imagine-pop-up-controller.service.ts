@@ -1,11 +1,11 @@
-import { EventEmitter, Injectable } from '@angular/core';
+import { ComponentRef, EventEmitter, Injectable } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { ImaginePopUpConfig } from '../interfaces/imagine-pop-up.interfaces';
 
 @Injectable({
   providedIn: 'root',
 })
-export class PopUpController {
+export class ImaginePopUpController {
   /**pop up animation */
   private animation = '';
   /**shows pop up */
@@ -14,17 +14,31 @@ export class PopUpController {
   private popUpConfiguration!: ImaginePopUpConfig;
   /**notifies pop up was closed */
   private closed = new EventEmitter();
+  /**component create */
+  componentCreated = new EventEmitter();
   /**flag to hidde pop up */
   hidde = false;
+  /**global props */
+  globalProps: any;
+  /**
+   * component ref
+   */
+  componentRef!: ComponentRef<any>;
 
   /**
    * opens pop up
    * @param popUpConfiguration configuration to be used in component
    */
-  openPopUp(popUpConfiguration: ImaginePopUpConfig) {
-    this.popUpConfiguration = popUpConfiguration;
-    this.animation = 'popUpFadeIn';
-    this.show = true;
+  openPopUp<T>(popUpConfiguration: ImaginePopUpConfig) {
+    return new Promise<ComponentRef<T>>((resolve, reject) => {
+      this.popUpConfiguration = popUpConfiguration;
+      this.animation = 'popUpFadeIn';
+      this.show = true;
+      const componentCreatedSub = this.componentCreated.subscribe(() => {
+        componentCreatedSub.unsubscribe();
+        resolve(this.componentRef as ComponentRef<T>);
+      });
+    });
   }
 
   /**

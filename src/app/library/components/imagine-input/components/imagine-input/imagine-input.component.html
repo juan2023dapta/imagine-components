@@ -7,7 +7,6 @@
       </span>
     </label>
   </div>
-
   <div
     [attr.invalid]="invalid ? 'true' : ''"
     [attr.readonly]="readonly ? 'true' : ''"
@@ -23,7 +22,7 @@
         {{ i + 1 }}
       </p>
     </div>
-    <span #startContent class="content content--start">
+    <span #startContent class="content content--start" [ngClass]="{ 'content--exist': startContentExist }">
       <ng-content select="[startContent]"></ng-content>
     </span>
     <input
@@ -50,21 +49,44 @@
       [id]="label"
       [attr.list]="list" />
     <div
-      *ngIf="boxTypes.includes(type)"
+      *ngIf="boxTypes.includes(type) && type !== 'code'"
       #inputElement
       [ngClass]="{
         'start-content-exist': startContentExist && !endContentExist,
         'end-content-exist': endContentExist && !startContentExist,
         'all-content-exist': endContentExist && startContentExist,
-        'imagine-input__element--box': inputBoxBigger
+        'imagine-input__element--box': inputBoxBigger,
+        'imagine-input__element--single-line': singleLine
       }"
+      [attr.data-placeholder]="!value ? placeholder : ''"
       class="imagine-input__element"
       (input)="onInput(inputTarget)"
       (keydown)="onKeyDown($event)"
       (keyup)="onKeyUp($event)"
       (blur)="onBlur($event)"
       (focus)="onFocus($event)"
+      spellcheck="false"
       contenteditable="true"></div>
+    <pre
+      *ngIf="boxTypes.includes(type) && type === 'code'"
+      #inputElement
+      [ngClass]="{
+        'start-content-exist': startContentExist && !endContentExist,
+        'end-content-exist': endContentExist && !startContentExist,
+        'all-content-exist': endContentExist && startContentExist,
+        'imagine-input__element--box': inputBoxBigger,
+        'imagine-input__element--single-line': singleLine,
+        'pretty-json': type === 'code'
+      }"
+      [attr.data-placeholder]="!value ? placeholder : ''"
+      class="imagine-input__element"
+      (input)="onInput(inputTarget)"
+      (keydown)="onKeyDown($event)"
+      (keyup)="onKeyUp($event)"
+      (blur)="onBlur($event)"
+      (focus)="onFocus($event)"
+      spellcheck="false"
+      contenteditable="true"></pre>
     <label
       [ngClass]="{ 'color-danger': invalid }"
       [class]="labelType + '-label'"
@@ -75,7 +97,7 @@
         <ng-content select="[labelContent]"></ng-content>
       </span>
     </label>
-    <span #endContent class="content content--end">
+    <span #endContent class="content content--end" [ngClass]="{ 'content--exist': endContentExist }">
       <ng-content select="[endContent]"></ng-content>
     </span>
   </div>
@@ -137,9 +159,16 @@
 <div
   #autocompleteContainer
   *ngIf="autocompleteConfig.show"
-  [ngStyle]="{ top: autocompleteConfig.y + 15 + 'px', left: autocompleteConfig.x + 'px' }"
+  [ngStyle]="{
+    top: autocompleteConfig.y + 15 + 'px',
+    left: autocompleteConfig.x + 'px',
+    width: autocompleteConfig.width
+  }"
   class="autocomplete-variable">
-  <div *ngFor="let variable of variablesList" (click)="insertText(variable)" class="autocomplete-variable__option">
-    {{ variable }}
+  <div
+    *ngFor="let variable of variablesList"
+    (click)="insertText(variableValueKey ? variable[variableValueKey] : variable)"
+    class="autocomplete-variable__option">
+    {{ variableLabelKey ? variable[variableLabelKey] : variable }}
   </div>
 </div>

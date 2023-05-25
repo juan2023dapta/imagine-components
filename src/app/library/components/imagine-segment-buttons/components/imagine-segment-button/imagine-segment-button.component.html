@@ -1,17 +1,37 @@
-<ng-container *ngIf="segmentStyle === 'buttons'">
-  <imagine-button [style]="ngStyle" height="auto" (click)="change()" background="light-gray" borderColor="primary">
-    <ng-container *ngIf="!templateRef">
-      {{ name }}
-    </ng-container>
-    <ng-container *ngIf="templateRef">
-      <ng-container *ngTemplateOutlet="content"></ng-container>
-    </ng-container>
-  </imagine-button>
+<ng-container *ngIf="segmentStyle === 'buttons' || segmentStyle === 'step'">
+  <div class="flex align-items-center">
+    <imagine-button
+      [ngStyle]="buttonComponentStyle"
+      [disable]="disable"
+      [buttonHover]="false"
+      [useDisableClass]="false"
+      [buttonClass]="buttonClass"
+      [buttonStyle]="ngStyle"
+      height="auto"
+      (click)="change()"
+      background="background"
+      borderColor="primary">
+      <ng-container *ngIf="!templateRef">
+        {{ name }}
+      </ng-container>
+      <ng-container *ngIf="templateRef">
+        <ng-container *ngTemplateOutlet="content"></ng-container>
+      </ng-container>
+    </imagine-button>
+  </div>
 </ng-container>
 
 <ng-container *ngIf="segmentStyle === 'segment'">
-  <imagine-button [style]="ngStyle" background="light" (click)="change()">
-    <div style="margin-top: -10px" class="responsive-text">
+  <imagine-button
+    [ngStyle]="buttonComponentStyle"
+    [disable]="disable"
+    [buttonHover]="false"
+    [useDisableClass]="false"
+    buttonClass="segment-button"
+    [buttonStyle]="ngStyle"
+    background="background"
+    (click)="change()">
+    <div class="responsive-text">
       <ng-container *ngIf="!templateRef">
         {{ name }}
       </ng-container>
@@ -23,7 +43,16 @@
 </ng-container>
 
 <ng-container *ngIf="segmentStyle === 'pill'">
-  <imagine-button [style]="ngStyle" height="auto" (click)="change()" [background]="selected ? 'primary' : 'light'">
+  <imagine-button
+    [ngStyle]="buttonComponentStyle"
+    [disable]="disable"
+    [buttonHover]="false"
+    [useDisableClass]="false"
+    [buttonClass]="buttonClass"
+    [buttonStyle]="ngStyle"
+    height="auto"
+    (click)="change()"
+    [background]="selected ? 'primary' : 'light'">
     <span [ngStyle]="{ color: selected ? 'white' : 'black' }">
       <ng-container *ngIf="!templateRef">
         {{ name }}

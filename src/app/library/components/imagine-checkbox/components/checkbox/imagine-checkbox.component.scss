@@ -1,3 +1,7 @@
+.checkbox-container{
+  display: flex;
+  gap: 2px;
+}
 @supports(-webkit-appearance: none) or (-moz-appearance: none) {
   input[type='checkbox'],
   input[type='radio'] {
@@ -59,7 +63,7 @@
       box-shadow: 0 0 0 var(--focus);
     }
     &:not(.switch) {
-      width: 22px;
+      width: 29px;
       &:after {
         opacity: var(--o, 0);
       }
@@ -68,7 +72,7 @@
       }
     }
     & + label {
-      font-size: 16px;
+      font-size: 14px;
       line-height: 21px;
       display: inline-block;
       vertical-align: top;

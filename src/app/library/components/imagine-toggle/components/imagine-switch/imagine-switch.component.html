@@ -1,0 +1,12 @@
+<div class="switch-container">
+  <label class="switch">
+    <input
+      [ngStyle]="{ opacity: disable ? '0.5' : '1', 'pointer-events': disable ? 'none' : 'auto' }"
+      [disabled]="disable"
+      type="checkbox"
+      [checked]="value"
+      (change)="toggle()" />
+    <span class="slider"></span>
+  </label>
+  <label *ngIf="label">{{ label }}</label>
+</div>

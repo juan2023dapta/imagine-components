@@ -1,0 +1,5 @@
+<div [className]="className">
+  <ng-container *ngFor="let node of nodesStructure">
+    <imagine-node-form [formName]="formName" [form]="form" [node]="node"></imagine-node-form>
+  </ng-container>
+</div>

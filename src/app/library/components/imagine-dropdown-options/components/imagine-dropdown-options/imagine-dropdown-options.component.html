@@ -1,0 +1,10 @@
+<div (click)="toggle()" class="dropdown">
+  <ng-content></ng-content>
+  <div class="dropdown-content" *ngIf="isOpen">
+    <div
+      (click)="!option.disable ? optionSelected.emit(option.value) : ''"
+      [ngClass]="{ disable: option.disable }"
+      *ngFor="let option of options"
+      [innerHTML]="option.label"></div>
+  </div>
+</div>

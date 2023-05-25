@@ -26,6 +26,8 @@ export class ImagineCheckboxComponent {
   @Input() readonly = false;
   /**checkbox id to associate it with label */
   @Input() checkboxId = '';
+  /**container checkbox style class */
+  @Input() containerClass = '';
 
   /**
    * control value accesor methods

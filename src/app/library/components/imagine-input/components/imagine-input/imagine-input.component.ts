@@ -141,7 +141,15 @@ export class ImagineInputComponent implements ControlValueAccessor, AfterViewIni
   /**autocomplete list */
   @Input() list = '';
   /**autocomplete variables list */
-  @Input() variablesList: string[] = [];
+  @Input() variablesList: any[] = [];
+  /**variable key to access its value*/
+  @Input() variableValueKey: string = '';
+  /**variable key to access its label*/
+  @Input() variableLabelKey: string = '';
+  /**single line for box types */
+  @Input() singleLine: boolean = false;
+  /**autofocus */
+  @Input() autoFocus = false;
 
   /**Reactive form control errors to show them in the input*/
   controlErrors!: ValidationErrors;
@@ -160,11 +168,14 @@ export class ImagineInputComponent implements ControlValueAccessor, AfterViewIni
   /**excluded types */
   excludedTypes = ['number', 'date'];
   /**box types */
-  boxTypes: ImagineInputType[] = ['variables', 'chip', 'code'];
+  boxTypes: ImagineInputType[] = ['box', 'variables', 'chip', 'code'];
+  /**box types */
+  preventEnterTypes: ImagineInputType[] = ['box', 'variables', 'chip'];
   /**outline class active */
   outlineClassActive = '';
   /**autocomplete box top, left */
   autocompleteConfig = {
+    width: '',
     x: 0,
     y: 0,
     show: false,
@@ -172,12 +183,6 @@ export class ImagineInputComponent implements ControlValueAccessor, AfterViewIni
 
   /**last caret position */
   lastCaretPosition = 0;
-
-  /**
-   * input count lines code editir
-   */
-  inputLines = 1;
-
   /**
    *
    * @param controlContainer access control container reactive form
@@ -194,6 +199,9 @@ export class ImagineInputComponent implements ControlValueAccessor, AfterViewIni
   ngAfterViewInit(): void {
     this.configureErrorMessages();
     this.changeDetector.detectChanges();
+    if (this.autoFocus) {
+      this.inputElement.nativeElement.focus();
+    }
   }
 
   /**
@@ -250,34 +258,6 @@ export class ImagineInputComponent implements ControlValueAccessor, AfterViewIni
    */
   get endContentExist() {
     return this.endContent?.nativeElement.children.length > 0;
-  }
-
-  /**
-   * input clienhte rect
-   */
-  get clientRectInput() {
-    return this.inputElement?.nativeElement.getBoundingClientRect();
-  }
-
-  /**
-   * input lines
-   */
-  get inputLinesCount() {
-    return Math.floor(this.clientRectInput?.height || 1 / 19) || 1;
-  }
-
-  get currentLine() {
-    const sel = document.getSelection();
-    if (!sel) {
-      return 1;
-    }
-    const nd = sel.anchorNode;
-    if (!nd) {
-      return 1;
-    }
-    const text = nd.textContent!.slice(0, sel.focusOffset);
-
-    return text.split('\n').length;
   }
 
   /**
@@ -366,7 +346,7 @@ export class ImagineInputComponent implements ControlValueAccessor, AfterViewIni
    * @param event key down event
    */
   onKeyDown(event: any) {
-    if (this.boxTypes.includes(this.type) && event.which === 13 && this.type !== 'code') {
+    if (this.preventEnterTypes.includes(this.type) && event.which === 13) {
       event.preventDefault();
     }
     this.currentKeyPressed = event.key;
@@ -427,9 +407,8 @@ export class ImagineInputComponent implements ControlValueAccessor, AfterViewIni
     }
     if (this.type === 'code') {
       this.lastCaretPosition = this.getContentEditableCaretposition();
-      this.codeFormat();
+      this.codeFormat(event);
     }
-
     this.lastKeyPressed = this.currentKeyPressed;
     this.value = event.target.value;
     this.onChange(this.value);
@@ -437,29 +416,77 @@ export class ImagineInputComponent implements ControlValueAccessor, AfterViewIni
     this.input.emit(event);
   }
 
-  codeFormat() {
-    this.inputElement.nativeElement.innerHTML = this.inputElement.nativeElement.innerHTML.replace(
-      /if/g,
-      '<span style="color:#C189B5;">if</span>'
+  /**
+   * input clienhte rect
+   */
+  get clientRectInput() {
+    return this.inputElement?.nativeElement.getBoundingClientRect();
+  }
+
+  /**
+   * input lines
+   */
+  get inputLinesCount() {
+    return Math.floor(this.clientRectInput?.height || 1 / 19) || 1;
+  }
+
+  codeFormat(event: any) {
+    this.inputElement.nativeElement.innerHTML = this.applyColors(event.target.value, false);
+    setTimeout(() => {
+      this.setCaretPosition(this.inputElement.nativeElement, this.lastCaretPosition);
+      this.inputElement.nativeElement.focus();
+    }, 0);
+  }
+
+  applyColors(obj: string, showNumebrLine: boolean = false, padding: number = 4) {
+    // line number start from 1
+    let line = 1;
+
+    if (typeof obj != 'string') {
+      obj = JSON.stringify(obj, undefined, 3);
+    }
+
+    /**
+     * Converts special charaters like &, <, > to equivalent HTML code of it
+     */
+    obj = obj.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    /* taken from https://stackoverflow.com/a/7220510 */
+
+    /**
+     * wraps every datatype, key for e.g
+     * numbers from json object to something like
+     * <span class="number" > 234 </span>
+     * this is why needed custom themeClass which we created in _global.css
+     * @return final bunch of span tags after all conversion
+     */
+    obj = obj.replace(
+      /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,
+      (match: any) => {
+        // class to be applied inside pre tag
+        let themeClass = 'number';
+        let id = '';
+        if (/^"/.test(match)) {
+          if (/:$/.test(match)) {
+            themeClass = 'key';
+            id = 'attribute-json-' + match.replace(/"|:/g, '');
+          } else {
+            themeClass = 'string';
+          }
+        } else if (/true|false/.test(match)) {
+          themeClass = 'boolean';
+        } else if (/null/.test(match)) {
+          themeClass = 'null';
+        }
+        return `<span id="${id}" class="${themeClass}">${match}</span>`;
+      }
     );
-    this.inputElement.nativeElement.innerHTML = this.inputElement.nativeElement.innerHTML.replace(
-      /\(/g,
-      '<span style="color:#4C89E3;">(</span>'
-    );
-    this.inputElement.nativeElement.innerHTML = this.inputElement.nativeElement.innerHTML.replace(
-      /\)/g,
-      '<span style="color:#4C89E3;">)</span>'
-    );
-    this.inputElement.nativeElement.innerHTML = this.inputElement.nativeElement.innerHTML.replace(
-      /\{/g,
-      '<span style="color:#4C89E3;">{</span>'
-    );
-    this.inputElement.nativeElement.innerHTML = this.inputElement.nativeElement.innerHTML.replace(
-      /\}/g,
-      '<span style="color:#4C89E3;">}</span>'
-    );
-    this.setCaretPosition(this.inputElement.nativeElement, this.lastCaretPosition);
-    this.inputElement.nativeElement.focus();
+
+    /**
+     * Regex for the start of the line, insert a number-line themeClass tag before each line
+     */
+    return showNumebrLine
+      ? obj.replace(/^/gm, () => `<span class="number-line pl-3 select-none" >${String(line++).padEnd(padding)}</span>`)
+      : obj;
   }
 
   // Move caret to a specific point in a DOM element
@@ -469,7 +496,6 @@ export class ImagineInputComponent implements ControlValueAccessor, AfterViewIni
       if (node.nodeType == 3) {
         // we have a text node
         if (node.length >= pos) {
-          console.log(pos);
           // finally add our range
           var range = document.createRange(),
             sel = window.getSelection();
@@ -490,11 +516,14 @@ export class ImagineInputComponent implements ControlValueAccessor, AfterViewIni
     }
     return pos; // needed because of recursion stuff
   }
+
   /**
    * titlecase format
    */
   titlecaseFormat(event: any) {
-    event.target.value = this.titleCasePipe.transform(event.target.value);
+    event.target.value = event.target.value.replace(/\w\S*/g, function (txt: string) {
+      return txt.charAt(0).toUpperCase() + txt.slice(1);
+    });
   }
 
   /**variable format */
@@ -519,6 +548,7 @@ export class ImagineInputComponent implements ControlValueAccessor, AfterViewIni
         range = selection!.getRangeAt(0),
         rect = range.getClientRects()[0];
 
+      this.autocompleteConfig.width = this.inputElement.nativeElement.getBoundingClientRect().width + 'px';
       this.autocompleteConfig.x = rect.x;
       this.autocompleteConfig.y = rect.y;
       this.autocompleteConfig.show = true;
@@ -580,7 +610,7 @@ export class ImagineInputComponent implements ControlValueAccessor, AfterViewIni
   /**
    * get content editable caret position
    */
-  getContentEditableCaretposition(node: any = this.inputElement.nativeElement) {
+  getContentEditableCaretposition() {
     let position = 0;
     const isSupported = typeof window.getSelection !== 'undefined';
     if (isSupported) {
@@ -592,7 +622,7 @@ export class ImagineInputComponent implements ControlValueAccessor, AfterViewIni
         // Clone the range
         const preCaretRange = range.cloneRange();
         // Select all textual contents from the contenteditable element
-        preCaretRange.selectNodeContents(node);
+        preCaretRange.selectNodeContents(this.inputElement.nativeElement);
         // And set the range end to the original clicked position
         preCaretRange.setEnd(range.endContainer, range.endOffset);
         // Return the text length from contenteditable start to the range end

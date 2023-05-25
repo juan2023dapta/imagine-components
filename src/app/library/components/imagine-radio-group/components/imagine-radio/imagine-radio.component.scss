@@ -1,0 +1,73 @@
+// Variables
+$border-color: #eaeaea;
+$accent-color: var(--imagine-primary-color);
+
+// Radio
+.radio {
+    display: flex;
+    align-items: center;
+    position: relative;
+    &__input {
+        position: absolute;
+        top: 4px;
+        left: 0;
+        width: 36px;
+        height: 20px;
+        opacity: 0;
+        z-index: 0;
+    }
+    
+    // Unchecked
+    &__label {
+        display: block;
+        padding: 5px 0 0 24px;
+        cursor: pointer;
+        
+        &:before {
+            content: '';
+            position: absolute;
+            top: 4px;
+            left: 0;
+            width: 16px;
+            height: 16px;
+            background-color: transparent;
+            border: 2px solid $border-color;
+            border-radius: 14px;
+            z-index: 1;
+            transition: border-color 0.28s cubic-bezier(.4, 0, .2, 1);
+        }
+         
+        &:after {
+            content: '';
+            position: absolute;
+            top: 8px;
+            left: 4px;
+            width: 12px;
+            height: 12px;
+            transform: scale(0, 0);
+            background-color: $accent-color;
+            border-radius: 50%;
+            z-index: 2;
+            transition: transform 0.28s cubic-bezier(.4, 0, .2, 1);
+        }
+    }
+    
+    // Checked
+    &__input:checked + &__label {
+        &:before {
+            border-color: $accent-color;
+        }
+        
+        &:after {
+            transform: scale(1, 1);
+        }
+    }
+    
+    // Focus
+    // Uncomment for accessible outline
+    // &__input:focus + &__label {
+    //     &:before {
+    //         outline: 1px dotted currentColor;
+    //     }
+    // }
+}

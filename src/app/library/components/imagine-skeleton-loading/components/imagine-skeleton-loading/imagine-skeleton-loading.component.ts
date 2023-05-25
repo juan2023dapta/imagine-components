@@ -10,4 +10,14 @@ export class ImagineSkeletonLoadingComponent {
   @Input() width = '150px';
   @Input() height = '19px';
   @Input() borderRadius = '10px';
+  @Input() skeletonStyle = {};
+
+  get ngStyle() {
+    return {
+      width: this.width,
+      height: this.height,
+      borderRadius: this.borderRadius,
+      ...this.skeletonStyle,
+    };
+  }
 }

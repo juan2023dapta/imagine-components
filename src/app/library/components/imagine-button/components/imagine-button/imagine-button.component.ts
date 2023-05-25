@@ -9,9 +9,12 @@ export class ImagineButtonComponent {
   /**button attributes */
   @Input() width = '100%';
   @Input() disable = false;
+  @Input() useDisableClass = true;
   @Input() buttonHover = true;
   /**button style from outside */
   @Input() buttonStyle = {};
+  /**button style from outside */
+  @Input() buttonClass = '';
   /**background */
   @Input() background = 'primary';
   /**background */

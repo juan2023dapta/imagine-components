@@ -3,4 +3,5 @@ export interface ImaginePopUpConfig {
   templateRef?: any;
   componentProps?: any;
   styles?: any;
+  containerStyles?: any;
 }

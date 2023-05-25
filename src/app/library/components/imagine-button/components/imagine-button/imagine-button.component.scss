@@ -2,9 +2,11 @@ $button-height: var(--imagine-button-height);
 $button-font-size: var(--imagine-button-font-size);
 $button-disabled-color: var(--imagine-button-disabled-color);
 $button-primary-color: var(--imagine-primary-color);
+$button-background-color: var(--imagine-background-color);
 $button-light-color: var(--imagine-light-color);
 $button-dark-color: var(--imagine-dark-color);
 $button-grey-color: var(--imagine-grey-color);
+$button-light-grey-color: var(--imagine-light-grey-color);
 $button-danger-color: var(--imagine-danger-color);
 $button-success-color: var(--imagine-success-color);
 $button-warning-color: var(--imagine-warning-color);
@@ -12,6 +14,15 @@ $button-padding: var(--imagine-button-padding);
 $button-font-weight: var(--imagine-button-font-weight);
 $button-border-radius: var(--imagine-button-border-radius);
 $button-font-family: var(--imagine-font-family);
+$button-text-color: var(--imagine-text-color);
+$button-font-family: var(--imagine-font-family);
+
+
+@mixin onFocus($color){
+    &:enabled:focus{
+        box-shadow: 0 0 0 2px #ffffff,  0 0 0 3px $color, 0 1px 2px 0 black;
+    }  
+  }
 
 .imagine-button {
     outline: none;
@@ -22,13 +33,73 @@ $button-font-family: var(--imagine-font-family);
     border-radius: $button-border-radius;
     align-items: center;
     justify-content: center;
-    font-family: 'Rubik', sans-serif;
+    font-family: $button-font-family;
     height: $button-height;
     font-size: $button-font-size;
     background-color: $button-primary-color;
     padding: $button-padding;
     font-weight: $button-font-weight;
+    transition: box-shadow .1s;
+    color: $button-text-color;
+    //background colors
+    &--primary{
+        background-color: $button-primary-color;
+        color: $button-light-color;
+        @include onFocus($button-primary-color)
+
+    }
+    &--light{
+        background-color: $button-light-color;
+        color: $button-primary-color;
+        @include onFocus($button-light-color);
+    }
+    &--background{
+        background-color: $button-background-color;
+        color: $button-primary-color;
+        @include onFocus($button-light-color);
+    }
+    &--dark{
+        background-color: $button-dark-color;
+        color: $button-light-color;
+        @include onFocus($button-dark-color);
+    }
+    &--danger{
+        background-color: $button-danger-color;
+        color: $button-light-color;
+        @include onFocus($button-danger-color)
+    }
+    &--success{
+        background-color: $button-success-color;
+        color: $button-light-color;
+        @include onFocus($button-success-color);
+    }
+    &--warning{
+        background-color: $button-warning-color;
+        color: $button-light-color;
+        @include onFocus($button-warning-color);
+    }
+    &--grey{
+        background-color: $button-grey-color;
+        color: $button-light-color;
+        @include onFocus($button-grey-color);
+    } 
+    &--light-grey{
+        background-color: $button-light-grey-color;
+        color: $button-dark-color;
+        @include onFocus($button-light-grey-color);
+    }
+    &--transparent{
+        background-color: transparent;
+        color: $button-light-color;
+    }
+    
     //text colors
+    &--text-text{
+        color: $button-text-color;
+    }
+    &--primary-text{
+        color: $button-primary-color;
+    }
     &--primary-text{
         color: $button-primary-color;
     }
@@ -50,39 +121,11 @@ $button-font-family: var(--imagine-font-family);
     &--grey-text{
         color: $button-grey-color;
     }
-    //background colors
-    &--primary{
-        background-color: $button-primary-color;
-        color: $button-light-color;
-    }
-    &--light{
-        background-color: $button-light-color;
-        color: $button-primary-color;
-    }
-    &--dark{
-        background-color: $button-dark-color;
-        color: $button-light-color;
-    }
-    &--danger{
-        background-color: $button-danger-color;
-        color: $button-light-color;
-    }
-    &--success{
-        background-color: $button-success-color;
-        color: $button-light-color;
-    }
-    &--warning{
-        background-color: $button-warning-color;
-        color: $button-light-color;
-    }
-    &--grey{
-        background-color: $button-grey-color;
-        color: $button-light-color;
-    }
   }
+
   
   .button-hover:hover {
-    opacity: 0.8;
+    filter: brightness(95%);
   }
   
   .disabled{

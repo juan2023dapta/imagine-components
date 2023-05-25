@@ -1,11 +1,6 @@
-import {
-  AfterViewInit,
-  ChangeDetectorRef,
-  Component,
-  ViewChild,
-} from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ViewChild } from '@angular/core';
 import { ImaginePopUpDynamicHostDirective } from '../../directives/imagine-pop-up-dynamic-host.directive';
-import { PopUpController } from '../../services/imagine-pop-up-controller.service';
+import { ImaginePopUpController } from '../../services/imagine-pop-up-controller.service';
 
 @Component({
   selector: 'imagine-pop-up',
@@ -22,10 +17,7 @@ export class ImaginePopUpComponent implements AfterViewInit {
    * @param popUpController service to manage the pop up
    * @param changeDetector change detector to avoid after view init errors
    */
-  constructor(
-    public popUpController: PopUpController,
-    private changeDetector: ChangeDetectorRef
-  ) {}
+  constructor(public popUpController: ImaginePopUpController, private changeDetector: ChangeDetectorRef) {}
 
   /**
    * after view init
@@ -42,15 +34,13 @@ export class ImaginePopUpComponent implements AfterViewInit {
    * creates dynamic component
    */
   createComponent() {
-    this.hostDirective.createComponent();
+    this.popUpController.componentRef = this.hostDirective.createComponent();
     if (this.popUpController.popUpConfig.componentProps) {
-      Object.keys(this.popUpController.popUpConfig.componentProps).forEach(
-        (key) => {
-          this.hostDirective.componentRef.instance[key] =
-            this.popUpController.popUpConfig.componentProps[key];
-        }
-      );
+      Object.keys(this.popUpController.popUpConfig.componentProps).forEach((key) => {
+        this.hostDirective.componentRef.instance[key] = this.popUpController.popUpConfig.componentProps[key];
+      });
     }
+    this.popUpController.componentCreated.emit();
     this.changeDetector.detectChanges();
   }
   /**

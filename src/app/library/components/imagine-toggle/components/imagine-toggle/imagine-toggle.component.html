@@ -1,0 +1,6 @@
+<input
+  [ngStyle]="{ opacity: disable ? '0.5' : '1', 'pointer-events': disable ? 'none' : 'auto' }"
+  [disabled]="disable"
+  type="checkbox"
+  [checked]="value"
+  (change)="toggle()" />

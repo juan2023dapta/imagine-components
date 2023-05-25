@@ -1,7 +1,25 @@
 <div
+  #buttonsContainer
   [ngStyle]="ngStyles"
+  [class]="'imagine-segment-buttons ' + containerClass"
   [ngClass]="{
-    'segment-border': showBorderForSegment && segmentStyle === 'segment' && content.length > 0
+    'segment-border': showBorderForSegment && segmentStyle === 'segment' && content.length > 0,
+    'imagine-segment-buttons--step': segmentStyle === 'step'
   }">
   <ng-content></ng-content>
 </div>
+
+<ng-container *ngIf="invalid && errors && errors.length">
+  <ng-container *ngTemplateOutlet="errorMessagesTemplate"></ng-container>
+</ng-container>
+
+<ng-template #errorMessagesTemplate>
+  <ng-container [ngSwitch]="errors[0]">
+    <small *ngSwitchCase="'required'" class="error-message">
+      {{ errorMessages[errors[0]] || fieldName + ' is required.' }}
+    </small>
+    <small *ngSwitchDefault class="error-message">
+      {{ errorMessages[errors[0]] || errors[0] + ' message not assigned.' }}
+    </small>
+  </ng-container>
+</ng-template>

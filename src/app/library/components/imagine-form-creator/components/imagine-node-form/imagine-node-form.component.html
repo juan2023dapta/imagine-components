@@ -1,0 +1,37 @@
+<form [formGroup]="form">
+  <div [hidden]="conditionToShowExist && !conditionToShow">
+    <div *ngIf="node.formControlName && node.inputData" [class]="node.className">
+      <ng-container>
+        <ng-container [ngSwitch]="node.type">
+          <ng-container *ngSwitchCase="'input'">
+            <imagine-input
+              *ngIf="{ type: node.inputData!['type'], icon: 'pi-eye' } as inputType"
+              [formControlName]="node.formControlName"
+              #input>
+              <em
+                *ngIf="node.inputData!['type'] === 'password'"
+                endContent
+                [class]="'pi pointer ' + inputType.icon"
+                (click)="changePasswordType(inputType)"></em>
+            </imagine-input>
+          </ng-container>
+          <ng-container *ngSwitchCase="'select'">
+            <imagine-select [formControlName]="node.formControlName" #input>
+              <imagine-select-option *ngFor="let option of node.selectOptions" [value]="option.value">
+                {{ option.label }}
+              </imagine-select-option>
+            </imagine-select>
+          </ng-container>
+          <ng-container *ngSwitchCase="'switch'">
+            <imagine-switch [formControlName]="node.formControlName" #input></imagine-switch>
+          </ng-container>
+        </ng-container>
+      </ng-container>
+    </div>
+    <imagine-form-creator
+      *ngIf="node.childNodes && node.childNodes.length"
+      [form]="subFormGroup"
+      [className]="node.className || ''"
+      [childNodes]="node.childNodes"></imagine-form-creator>
+  </div>
+</form>

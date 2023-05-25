@@ -61,15 +61,9 @@
     <div
       class="dates"
       #listContainer
+      *ngIf="showCalendar"
       [ngClass]="{ 'dates--time-picker': datetimePicker && currentView === 'days' }"
-      [ngStyle]="{
-        top:
-          distanceToBottom <= 200
-            ? details.getBoundingClientRect().top - listContainer.getBoundingClientRect().height + 5 + 'px'
-            : details.getBoundingClientRect().top + details.getBoundingClientRect().height + 8 + 'px',
-        width: details.getBoundingClientRect().width - 2 + 'px'
-      }"
-      *ngIf="showCalendar">
+      [ngStyle]="calendarContainerStyle">
       <div class="month-year-container">
         <div
           (click)="goPrev()"
@@ -130,63 +124,71 @@
       </div>
       <div class="days" *ngIf="currentView === 'days'">
         <div class="day empty-cell" *ngFor="let dayWeek of datepickerService.daysWeek">{{ dayWeek }}</div>
-        <div
-          class="day"
-          [ngClass]="{
-            'disabled-day':
-              (minDate &&
-                currentDate.year === minDate.getFullYear() &&
-                currentDate.month === minDate.getMonth() &&
-                day <= minDate.getDate()) ||
-              (minDate && currentDate.year === minDate.getFullYear() && currentDate.month < minDate.getMonth()) ||
-              (minDate && currentDate.year < minDate.getFullYear()) ||
-              (maxDate &&
-                currentDate.year === maxDate.getFullYear() &&
-                currentDate.month === maxDate.getMonth() &&
-                day >= maxDate.getDate()) ||
-              (maxDate && currentDate.year === maxDate.getFullYear() && currentDate.month > maxDate.getMonth()) ||
-              (maxDate && currentDate.year > maxDate.getFullYear()),
-            'empty-cell': day === '',
-            'first-in-range':
-              range &&
-              value &&
-              currentDate.year === value[0]?.getFullYear() &&
-              currentDate.month === value[0]?.getMonth() &&
-              day === value[0]?.getDate(),
-            'last-in-range':
-              range &&
-              value &&
-              currentDate.year === value[1]?.getFullYear() &&
-              currentDate.month === value[1]?.getMonth() &&
-              day === value[1]?.getDate(),
-            'in-range':
-              range &&
-              value &&
-              day &&
-              ({ day: this.day, month: currentDate.month, year: currentDate.year } | buildDate).getTime() >=
-                value[0]?.getTime() &&
-              ({ day: this.day, month: currentDate.month, year: currentDate.year } | buildDate).getTime() <=
-                value[1]?.getTime(),
-            'selected-item':
-              (!range &&
-                value?.getMonth() === currentDate.month &&
-                value?.getDate() === day &&
-                value?.getFullYear() === currentDate.year) ||
-              (range &&
+        <ng-container *ngFor="let day of calendarData.days">
+          <div
+            *ngIf="{
+              disabled:
+                (minDate &&
+                  currentDate.year === minDate.getFullYear() &&
+                  currentDate.month === minDate.getMonth() &&
+                  day <= minDate.getDate()) ||
+                (minDate && currentDate.year === minDate.getFullYear() && currentDate.month < minDate.getMonth()) ||
+                (minDate && currentDate.year < minDate.getFullYear()) ||
+                (maxDate &&
+                  currentDate.year === maxDate.getFullYear() &&
+                  currentDate.month === maxDate.getMonth() &&
+                  day >= maxDate.getDate()) ||
+                (maxDate && currentDate.year === maxDate.getFullYear() && currentDate.month > maxDate.getMonth()) ||
+                (maxDate && currentDate.year > maxDate.getFullYear()),
+              firstInRange:
+                range &&
                 value &&
-                value[0]?.getMonth() === currentDate.month &&
-                value[0]?.getDate() === day &&
-                value[0]?.getFullYear() === currentDate.year) ||
-              (range &&
+                currentDate.year === value[0]?.getFullYear() &&
+                currentDate.month === value[0]?.getMonth() &&
+                day === value[0]?.getDate(),
+              lastInRange:
+                range &&
                 value &&
-                value[1]?.getMonth() === currentDate.month &&
-                value[1]?.getDate() === day &&
-                value[1]?.getFullYear() === currentDate.year)
-          }"
-          (click)="selectDay({day, details})"
-          *ngFor="let day of calendarData.days">
-          {{ day }}
-        </div>
+                currentDate.year === value[1]?.getFullYear() &&
+                currentDate.month === value[1]?.getMonth() &&
+                day === value[1]?.getDate(),
+              inRange:
+                range &&
+                value &&
+                day &&
+                ({ day: this.day, month: currentDate.month, year: currentDate.year } | buildDate).getTime() >=
+                  value[0]?.getTime() &&
+                ({ day: this.day, month: currentDate.month, year: currentDate.year } | buildDate).getTime() <=
+                  value[1]?.getTime(),
+              selectedItem:
+                (!range &&
+                  value?.getMonth() === currentDate.month &&
+                  value?.getDate() === day &&
+                  value?.getFullYear() === currentDate.year) ||
+                (range &&
+                  value &&
+                  value[0]?.getMonth() === currentDate.month &&
+                  value[0]?.getDate() === day &&
+                  value[0]?.getFullYear() === currentDate.year) ||
+                (range &&
+                  value &&
+                  value[1]?.getMonth() === currentDate.month &&
+                  value[1]?.getDate() === day &&
+                  value[1]?.getFullYear() === currentDate.year)
+            } as conditions"
+            class="day"
+            [ngClass]="{
+              'disabled-day': conditions.disabled,
+              'empty-cell': day === '',
+              'first-in-range': conditions.firstInRange,
+              'last-in-range': conditions.lastInRange,
+              'in-range': conditions.inRange,
+              'selected-item': conditions.selectedItem
+            }"
+            (click)="!conditions.disabled ? selectDay({day, details}): ''">
+            {{ day }}
+          </div>
+        </ng-container>
       </div>
 
       <div class="time-picker" *ngIf="!range && currentView === 'days' && this.datetimePicker">

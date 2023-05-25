@@ -46,6 +46,7 @@ export class ImagineAlertController {
     cancelFunction?: any;
     iconName?: string;
     iconColor?: string;
+    preventHideAlertOnConfirm?: boolean;
   }) {
     this.openAlert({
       title: config.title || 'Confirm',
@@ -60,7 +61,9 @@ export class ImagineAlertController {
           buttonIcon: 'bx bx-check',
           buttonHandler: () => {
             config.confirmFunction();
-            this.hideAlert();
+            if (!config.preventHideAlertOnConfirm) {
+              this.hideAlert();
+            }
           },
         },
         {

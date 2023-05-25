@@ -1,13 +1,25 @@
-import { Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+  TemplateRef,
+  ViewChild,
+} from '@angular/core';
 
 @Component({
-  selector: 'app-accordion',
-  templateUrl: './accordion.component.html',
-  styleUrls: ['./accordion.component.scss'],
+  selector: 'imagine-accordion',
+  templateUrl: './imagine-accordion.component.html',
+  styleUrls: ['./imagine-accordion.component.scss'],
 })
-export class AccordionComponent implements OnInit, OnDestroy {
+export class ImagineAccordionComponent implements OnInit, OnDestroy {
   /**access accordion container */
   @ViewChild('container') container!: ElementRef<HTMLDivElement>;
+  /**access accordion icon template */
+  @ViewChild('iconTemplate') iconTemplate!: TemplateRef<any>;
   /**access accordion content div */
   @ViewChild('content') content!: ElementRef<HTMLDivElement>;
   /**tells the parent when accordion is open or closed */
@@ -17,12 +29,20 @@ export class AccordionComponent implements OnInit, OnDestroy {
   /**accordion type to know which content show */
   @Input() accordionType: 'normal' | 'floating' | 'hidden' = 'normal';
   /**accordion container style */
-  @Input() style = {};
-  /**accordion content style */
-  @Input() contentStyle = {};
+  @Input() accordionStyle = {};
+  /**accordion inner content style */
+  @Input() innerContentStyle = {};
+  /**accordion container class */
+  @Input() accordionClass = '';
+  /**accordion inner content class */
+  @Input() innerContentClass = '';
   /**move content in case is accordion type floating */
   @Input() contentMoveInX = '8px';
   @Input() contentMoveInY = '8px';
+  /**show toggle icon */
+  @Input() showAccordionIcon = true;
+  /**block click */
+  @Input() blockClick = false;
 
   /**
    *
@@ -145,7 +165,7 @@ export class AccordionComponent implements OnInit, OnDestroy {
           : '',
       width:
         this.accordionType === 'floating' ? this.container?.nativeElement.getBoundingClientRect().width + 'px' : '',
-      ...this.contentStyle,
+      ...this.innerContentStyle,
     };
   }
 

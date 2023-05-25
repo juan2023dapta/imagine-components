@@ -1,0 +1,25 @@
+<div [class]="'wrapper ' + imagineToastController.animation">
+  <div [class]="'imagine-toast imagine-toast--' + imagineToastController.toastInfo.color">
+    <div class="container-1">
+      <span class="loader" *ngIf="imagineToastController.loading"></span>
+      <em
+        *ngIf="!imagineToastController.loading"
+        [class]="
+          'imagine-toast__icon imagine-toast__icon--' +
+          imagineToastController.toastInfo.color +
+          ' ' +
+          imagineToastController.toastInfo.icon
+        "></em>
+    </div>
+    <div class="container-2">
+      <p>{{ imagineToastController.toastInfo.title }}</p>
+      <p [innerHTML]="imagineToastController.toastInfo.message"></p>
+    </div>
+    <button
+      *ngIf="!imagineToastController.loading"
+      class="imagine-toast__button"
+      (click)="imagineToastController.showToast = false">
+      &times;
+    </button>
+  </div>
+</div>

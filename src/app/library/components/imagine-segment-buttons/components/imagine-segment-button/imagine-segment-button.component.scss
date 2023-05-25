@@ -4,3 +4,18 @@
     margin-top: 0 !important;
   }
 }
+
+
+:host ::ng-deep .segment-button{
+  transition: border .2s;
+  border-bottom: 2px solid var(--imagine-grey-color);
+  &:hover{
+    border-bottom: 2px solid #ADB5BD;
+  }
+}
+
+
+.step-line{
+  border: 1px solid var(--imagine-grey-color);
+  width: 100%;
+}

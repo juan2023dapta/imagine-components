@@ -144,6 +144,15 @@ export class ImagineDatepickerComponent implements OnInit, AfterViewInit, OnDest
   /**to konw how many days are in current month */
   daysInMonth = 0;
 
+  calendarContainerSize = {
+    width: '0px',
+  };
+
+  calendarContainerStyle = {
+    top: '0px',
+    opacity: '0',
+    ...this.calendarContainerSize,
+  };
   /**
    *
    * @param controlContainer service to access form control
@@ -248,8 +257,15 @@ export class ImagineDatepickerComponent implements OnInit, AfterViewInit, OnDest
    */
   get distanceToBottom() {
     const rect = this.details.nativeElement.getBoundingClientRect();
-    const bodyRect = document.body.getBoundingClientRect();
-    return bodyRect.bottom - rect.bottom;
+    const bodyRect = window.innerHeight;
+    return bodyRect - rect.bottom;
+  }
+
+  /**
+   * body rect
+   */
+  get bodyRect() {
+    return document.body.getBoundingClientRect();
   }
 
   /**
@@ -603,6 +619,7 @@ export class ImagineDatepickerComponent implements OnInit, AfterViewInit, OnDest
    * @param details native element
    */
   onToggle(event: any, details: any) {
+    this.calendarContainerStyle.opacity = '0';
     if (this.readonly || this.disable || this.endContentClicked) {
       this.endContentClicked = false;
       details.removeAttribute('open');
@@ -617,10 +634,42 @@ export class ImagineDatepickerComponent implements OnInit, AfterViewInit, OnDest
         this.setSelectedMonth(this.value ? this.value : new Date());
       }
       this.toggleListeners('add');
+      setTimeout(() => {
+        this.setCalendarContainerStyle();
+      }, 0);
     } else {
       this.showCalendar = false;
       this.toggleListeners('remove');
     }
+  }
+
+  /**
+   * set options container style
+   */
+  setCalendarContainerStyle() {
+    this.calendarContainerSize.width = this.details.nativeElement.getBoundingClientRect().width + 'px';
+    this.calendarContainerStyle = {
+      top:
+        this.distanceToBottom <= 320
+          ? this.details.nativeElement.getBoundingClientRect().top -
+              this.listContainer.nativeElement.getBoundingClientRect().height +
+              5 >
+            0
+            ? this.details.nativeElement.getBoundingClientRect().top -
+              this.listContainer.nativeElement.getBoundingClientRect().height +
+              5 +
+              'px'
+            : this.details.nativeElement.getBoundingClientRect().top -
+              this.listContainer.nativeElement.getBoundingClientRect().height +
+              this.listContainer.nativeElement.getBoundingClientRect().height / 2 +
+              'px'
+          : this.details.nativeElement.getBoundingClientRect().top +
+            this.details.nativeElement.getBoundingClientRect().height +
+            8 +
+            'px',
+      opacity: '1',
+      ...this.calendarContainerSize,
+    };
   }
 
   /**
@@ -831,6 +880,9 @@ export class ImagineDatepickerComponent implements OnInit, AfterViewInit, OnDest
       this.onTouch();
       this.onChange(this.value);
       this.dateChange.emit(this.value);
+      if (!this.datetimePicker) {
+        if (details) details.removeAttribute('open');
+      }
     } else {
       if (!this.value) {
         this.value = new Array(2);

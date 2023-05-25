@@ -1,4 +1,6 @@
-<div [ngStyle]="{ opacity: disable ? '0.5' : '1', 'pointer-events': disable || readonly ? 'none' : 'auto' }">
+<div
+  [class]="'checkbox-container ' + containerClass"
+  [ngStyle]="{ opacity: disable ? '0.5' : '1', 'pointer-events': disable || readonly ? 'none' : 'auto' }">
   <input
     #checkbox
     [disabled]="disable"

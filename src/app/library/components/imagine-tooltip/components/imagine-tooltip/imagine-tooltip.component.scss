@@ -20,7 +20,7 @@ $tooltip-grey-color: var(--imagine-grey-color);
   color: black;
   padding: 7px;
   border-radius: 7px;
-  z-index: 999;
+  z-index: 4;
   border: 1px solid $tooltip-grey-color;
   div {
     overflow-y: auto;
@@ -36,7 +36,7 @@ $tooltip-grey-color: var(--imagine-grey-color);
     margin-left: -10px;
     position: absolute;
     top: 100%;
-    z-index: 999;
+    z-index: 4;
   }
 }
 

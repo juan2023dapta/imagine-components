@@ -8,4 +8,4 @@ import { ImaginePopUpDynamicHostDirective } from './directives/imagine-pop-up-dy
   imports: [CommonModule],
   exports: [ImaginePopUpComponent],
 })
-export class PopUpModule {}
+export class ImaginePopUpModule {}

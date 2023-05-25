@@ -1,3 +1,36 @@
+$segment-danger-color: var(--imagine-danger-color);
+
+
+:host{
+  position: relative;
+}
+
+.imagine-segment-buttons{
+  display: flex;
+  &--step{
+   align-items: center;
+  }
+}
+
+.columns-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.columns-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
 .segment-border {
-  border-bottom: 1px solid var(--app-soft-gray-color);
+  border-bottom: 2px solid var(--imagine-grey-color);
+}
+
+
+.error-message{
+  color: $segment-danger-color;
+  &--absolute{
+      position: absolute;
+      bottom: -17px;
+  }
 }

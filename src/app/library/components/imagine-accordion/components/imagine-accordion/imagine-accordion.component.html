@@ -1,15 +1,27 @@
-<div class="accordion" #container (click)="toggleAccordion()" [ngStyle]="style">
-  <p class="accordion-title">
-    <ng-content select="[title]"></ng-content>
-    <em [ngClass]="{ 'accordion-icon-rotate': open }" class="bx bx-chevron-down accordion-icon"></em>
-  </p>
-  <p
+<div
+  [class]="'accordion ' + accordionClass"
+  #container
+  (click)="!blockClick ? toggleAccordion() : ''"
+  [ngClass]="{ pointer: !blockClick }"
+  [ngStyle]="accordionStyle">
+  <div class="accordion__outer-content">
+    <ng-content select="[outerContent]"></ng-content>
+    <ng-container *ngIf="showAccordionIcon">
+      <ng-container *ngTemplateOutlet="iconTemplate"></ng-container>
+    </ng-container>
+  </div>
+
+  <div
     (click)="$event.stopPropagation()"
     *ngIf="open && accordionType !== 'hidden'"
-    class="content"
+    [class]="'accordion__inner-content ' + innerContentClass"
     #content
-    [ngClass]="{ 'content-floating': accordionType === 'floating' }"
+    [ngClass]="{ 'accordion__inner-content--floating': accordionType === 'floating' }"
     [ngStyle]="contentNgStyle">
-    <ng-content select="[content]"></ng-content>
-  </p>
+    <ng-content select="[innerContent]"></ng-content>
+  </div>
 </div>
+
+<ng-template #iconTemplate>
+  <em [ngClass]="{ 'accordion__icon--rotate': open }" class="bx bx-chevron-down accordion__icon pointer"></em>
+</ng-template>
