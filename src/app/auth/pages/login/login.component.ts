@@ -21,22 +21,22 @@ export class LoginComponent implements OnInit {
    * Login
    */
   login() {
-    this.router.navigateByUrl('/docs/forms');
-    // this.authService
-    //   .login()
-    //   .then(async (resp) => {
-    //     if (!resp.user.email?.includes('@imagineapps.co')) {
-    //       this.alertController.handleError({
-    //         msg: 'Email address is not from imagine apps.',
-    //       });
-    //       await this.authService.logout();
-    //     } else {
-    //     }
-    //   })
-    //   .catch(() => {
-    //     this.alertController.handleError({
-    //       msg: 'Invalid credentials, please try again.',
-    //     });
-    //   });
+    this.authService
+      .login()
+      .then(async (resp) => {
+        if (!resp.user.email?.includes('@imagineapps.co')) {
+          this.alertController.handleError({
+            msg: 'Email address is not from imagine apps.',
+          });
+          await this.authService.logout();
+        } else {
+          this.router.navigateByUrl('/docs/forms');
+        }
+      })
+      .catch(() => {
+        this.alertController.handleError({
+          msg: 'Invalid credentials, please try again.',
+        });
+      });
   }
 }

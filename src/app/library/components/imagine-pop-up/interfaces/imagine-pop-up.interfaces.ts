@@ -5,3 +5,8 @@ export interface ImaginePopUpConfig {
   styles?: any;
   containerStyles?: any;
 }
+
+export interface ImaginePopUpInternalConfig extends ImaginePopUpConfig {
+  animation?: string;
+  showingPopUp?: boolean;
+}

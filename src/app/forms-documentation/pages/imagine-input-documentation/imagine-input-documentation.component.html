@@ -2,9 +2,6 @@
 
 <div class="columns-3 gap-20">
   <div class="margin-top-10">
-    <imagine-input label="Code Input" type="code"></imagine-input>
-  </div>
-  <div class="margin-top-10">
     <imagine-input label="Simple input"></imagine-input>
   </div>
   <div class="margin-top-10">
@@ -68,18 +65,13 @@
     </form>
   </div>
   <div class="margin-top-10">
-    <imagine-input label="Phone" type="phone"></imagine-input>
+    <imagine-input label="Phone" type="phone" value="1222222222"></imagine-input>
   </div>
   <div class="margin-top-10">
     <imagine-input label="Currency" type="currency"></imagine-input>
   </div>
   <div class="margin-top-10">
     <imagine-input label="Group number" type="groupNumber"></imagine-input>
-  </div>
-  <div class="margin-top-10">
-    <form [formGroup]="formGroupExample">
-      <imagine-input formControlName="mask" label="Mask" type="mask" mask="ll_ll"></imagine-input>
-    </form>
   </div>
   <div class="margin-top-10">
     <imagine-input label="Number" type="number"></imagine-input>
@@ -99,10 +91,4 @@
   <div class="margin-top-10">
     <imagine-input label="Material Input" containerClass="material-input" labelType="floating"></imagine-input>
   </div>
-  <div class="margin-top-10">
-    <imagine-input label="Code Input" type="code"></imagine-input>
-  </div>
-  <form [formGroup]="formGroupExample">
-    <imagine-datepicker formControlName="date" dateFormat="MM/DD/YYYY HH:mm"></imagine-datepicker>
-  </form>
 </div>

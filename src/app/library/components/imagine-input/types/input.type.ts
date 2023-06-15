@@ -11,5 +11,4 @@ export type ImagineInputType =
   | 'chip'
   | 'title'
   | 'variables'
-  | 'box'
-  | 'code';
+  | 'box';

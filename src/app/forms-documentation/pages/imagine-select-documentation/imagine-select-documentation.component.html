@@ -17,16 +17,25 @@
     </imagine-select>
   </div>
   <div class="margin-top-10">
-    <imagine-select label="Start content">
-      <div startContent>
-        <em class="bx bx-error-circle common-icon"></em>
-      </div>
+    <imagine-select label="Clear value" value="first option" [canClearSelection]="true">
+      <imagine-select-option value="first option">first option</imagine-select-option>
+      <imagine-select-option value="second option">second option</imagine-select-option>
     </imagine-select>
   </div>
   <div class="margin-top-10">
     <imagine-select label="Multiple" [multiple]="true">
       <imagine-select-option value="option">Option</imagine-select-option>
       <imagine-select-option value="option1">Option 1</imagine-select-option>
+    </imagine-select>
+  </div>
+  <div class="margin-top-10">
+    <imagine-select label="Filter" #filterSelect>
+      <imagine-input filter (valueChange)="filterSelect.filterOptions($event)">
+        <em style="margin-left: 2px" endContent class="bx bx-search common-icon"></em>
+      </imagine-input>
+      <imagine-select-option *ngFor="let country of countries" [value]="country.name">
+        {{ country.name }}
+      </imagine-select-option>
     </imagine-select>
   </div>
 </div>

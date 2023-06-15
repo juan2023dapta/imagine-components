@@ -14,15 +14,13 @@
     [style]="containerStyle"
     [ngClass]="{
       'outline-primary': isFocused,
-      'imagine-input--box': boxTypes.includes(type),
-      'imagine-input--code': type === 'code'
+      'imagine-input--box': boxTypes.includes(type)
     }">
-    <div class="input-lines" *ngIf="type === 'code'">
-      <p *ngFor="let inputLine of [].constructor(inputLinesCount); let i = index">
-        {{ i + 1 }}
-      </p>
-    </div>
-    <span #startContent class="content content--start" [ngClass]="{ 'content--exist': startContentExist }">
+    <span
+      #startContent
+      (click)="startContentClick.emit($event)"
+      class="content content--start"
+      [ngClass]="{ 'content--exist': startContentExist }">
       <ng-content select="[startContent]"></ng-content>
     </span>
     <input
@@ -49,7 +47,7 @@
       [id]="label"
       [attr.list]="list" />
     <div
-      *ngIf="boxTypes.includes(type) && type !== 'code'"
+      *ngIf="boxTypes.includes(type)"
       #inputElement
       [ngClass]="{
         'start-content-exist': startContentExist && !endContentExist,
@@ -67,26 +65,6 @@
       (focus)="onFocus($event)"
       spellcheck="false"
       contenteditable="true"></div>
-    <pre
-      *ngIf="boxTypes.includes(type) && type === 'code'"
-      #inputElement
-      [ngClass]="{
-        'start-content-exist': startContentExist && !endContentExist,
-        'end-content-exist': endContentExist && !startContentExist,
-        'all-content-exist': endContentExist && startContentExist,
-        'imagine-input__element--box': inputBoxBigger,
-        'imagine-input__element--single-line': singleLine,
-        'pretty-json': type === 'code'
-      }"
-      [attr.data-placeholder]="!value ? placeholder : ''"
-      class="imagine-input__element"
-      (input)="onInput(inputTarget)"
-      (keydown)="onKeyDown($event)"
-      (keyup)="onKeyUp($event)"
-      (blur)="onBlur($event)"
-      (focus)="onFocus($event)"
-      spellcheck="false"
-      contenteditable="true"></pre>
     <label
       [ngClass]="{ 'color-danger': invalid }"
       [class]="labelType + '-label'"
@@ -97,7 +75,11 @@
         <ng-content select="[labelContent]"></ng-content>
       </span>
     </label>
-    <span #endContent class="content content--end" [ngClass]="{ 'content--exist': endContentExist }">
+    <span
+      #endContent
+      (click)="endContentClick.emit($event)"
+      class="content content--end"
+      [ngClass]="{ 'content--exist': endContentExist }">
       <ng-content select="[endContent]"></ng-content>
     </span>
   </div>

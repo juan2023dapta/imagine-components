@@ -1,220 +1,221 @@
-
-
-
-
-
-:host{
-    width: 100%;
+:host {
+  width: 100%;
 }
 
-.container{
-    position: relative;
+.container {
+  position: relative;
 }
 
-@mixin labelUp{
-    transform: translate(0px, -20px);
-    font-size: 14px;
+@mixin labelUp {
+  transform: translate(5px, -22px);
+  font-size: 14px;
+  background-color: var(--imagine-background-color);
 }
 
-@mixin floatingLabel{
-    position: absolute;
-    padding: 5px;
-    z-index: 4;
-    background-color: var(--imagine-background);
-    transform: translateX(7px);
+@mixin floatingLabel {
+  position: absolute;
+  background-color: transparent;
+  transform: translateX(10px);
 }
 
-.imagine-input{
-    outline: 1px solid var(--imagine-border-color);
-    border: none;
-    -webkit-border-radius: 7px;
-    -moz-border-radius: 7px;
-    border-radius: 7px;
-    -khtml-border-radius: 7px;
-    display: flex;
-    width: 100%;
-    height: var(--imagine-input-height);
-    align-items: center;
-    transition: box-shadow .1s, outline .5s;
-    &:hover{
-        outline: 1px solid var(--imagine-primary-color);
-    }
-    &__element{
-        background-color: var(--imagine-background-color);
-        border-radius: inherit;
-        color: var(--imagine-text-color);
-        padding: 0 5px;
-        border: none;
-        width: 100%;
-        height: 100%;
-        outline: none;
-        flex-grow: 3;
-        font-family: var(--imagine-font-family);;
-        font-size: var(--imagine-font-size);
-        &:focus + .floating-label,
-        &:not(:placeholder-shown) + .floating-label{
-            transition: all 0.1s;
-            @include labelUp();
-        }
-        &:focus + .fixed-label,
-        &:focus + .floating-label{
-            color: var(--imagine-primary-color)
-        }
-        &::-webkit-input-placeholder {
-          font-size: var(--imagine-font-size);
-          font-family: var(--imagine-font-family);;
-        }
-          
-        &:-moz-placeholder {
-          font-size: var(--imagine-font-size);
-          font-family: var(--imagine-font-family);;
-        }
-        &::-moz-placeholder {
-          font-size: var(--imagine-font-size);
-          font-family: var(--imagine-font-family);;
-        }
-        &:-ms-placeholder {
-          font-size: var(--imagine-font-size);
-          font-family: var(--imagine-font-family);;
-        }
-          
-          /* Change the white to any color */
-        &:-webkit-autofill,
-        &:-webkit-autofill:hover, 
-        &:-webkit-autofill:focus, 
-        &:-webkit-autofill:active{
-            -webkit-box-shadow: 0 0 0 30px white inset !important;
-            box-shadow: 0 0 0 30px white inset !important;
-        }
-        &--box{
-            padding: 10px 5px;
-        }
-        &--single-line{
-            &::before {
-                content: attr(data-placeholder);
-            } 
-            white-space: nowrap;
-            width:200px;
-            overflow: hidden;
-            * {
-                display:inline;
-                white-space:nowrap;
-            }
-            br {
-                display:none;
-            }
-        }
-    }
-    &--box{
-        height: auto;
-        min-height: var(--imagine-input-height);
-        overflow-y: auto;
-    }
-    &--code{
-        background-color: #1E1E1E;
-        padding-left: 20px;
-        box-shadow: none;
-        .imagine-input__element{
-            font-size: 15px;
-            color: white
-        }
-    }
- 
-    .floating-label{
-       @include floatingLabel();
-    }
-    .fixed-label{
-       @include floatingLabel();
-       @include labelUp();
-    }
-}
-
-.imagine-input[invalid="true"]{
-    outline: 1px solid var(--imagine-danger-color);
-    box-shadow: none;
-}
-
-.imagine-input[readonly="true"]{
-    box-shadow: none;
-}
-
-.outline-primary{
-    outline: 1px solid  var(--imagine-primary-color);
-    box-shadow: 0 0 0 0.3rem var(--imagine-input-box-shadow-focus);
-}
-
-.outline-primary[state="invalid"]{
-    box-shadow: none;
-}
-
-.content{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-    background-color:  var(--imagine-background-color);
+.imagine-input {
+  outline: 1px solid var(--imagine-border-color);
+  border: none;
+  -webkit-border-radius: 7px;
+  -moz-border-radius: 7px;
+  border-radius: 7px;
+  -khtml-border-radius: 7px;
+  display: flex;
+  width: 100%;
+  height: var(--imagine-input-height);
+  align-items: center;
+  transition: box-shadow 0.1s, outline 0.5s;
+  &:hover {
+    outline: 1px solid var(--imagine-primary-color);
+  }
+  &__element {
+    background-color: var(--imagine-background-color);
+    border-radius: inherit;
     color: var(--imagine-text-color);
-    &--exist{
-        width: 30px;
+    padding: 0 5px;
+    border: none;
+    width: 100%;
+    height: 100%;
+    outline: none;
+    flex-grow: 3;
+    font-family: var(--imagine-font-family);
+    font-size: var(--imagine-font-size);
+    &:focus + .floating-label,
+    &:not(:placeholder-shown) + .floating-label {
+      transition: all 0.1s;
+      @include labelUp();
+    }
+    &:focus + .fixed-label,
+    &:focus + .floating-label {
+      color: var(--imagine-primary-color);
+    }
+    &::-webkit-input-placeholder {
+      font-size: var(--imagine-font-size);
+      font-family: var(--imagine-font-family);
     }
 
+    &:-moz-placeholder {
+      font-size: var(--imagine-font-size);
+      font-family: var(--imagine-font-family);
+    }
+    &::-moz-placeholder {
+      font-size: var(--imagine-font-size);
+      font-family: var(--imagine-font-family);
+    }
+    &:-ms-placeholder {
+      font-size: var(--imagine-font-size);
+      font-family: var(--imagine-font-family);
+    }
+
+    /* Change the white to any color */
+    &:-webkit-autofill,
+    &:-webkit-autofill:hover,
+    &:-webkit-autofill:focus,
+    &:-webkit-autofill:active {
+      -webkit-box-shadow: 0 0 0 30px white inset !important;
+      box-shadow: 0 0 0 30px white inset !important;
+    }
+    &--box {
+      padding: 10px 5px;
+    }
+    &--single-line {
+      &::before {
+        content: attr(data-placeholder);
+      }
+      white-space: nowrap;
+      width: 200px;
+      overflow: hidden;
+      * {
+        display: inline;
+        white-space: nowrap;
+      }
+      br {
+        display: none;
+      }
+    }
+  }
+  &--box {
+    height: auto;
+    min-height: var(--imagine-input-height);
+    overflow-y: auto;
+  }
+  &--code {
+    background-color: #1e1e1e;
+    padding-left: 20px;
+    box-shadow: none;
+    .imagine-input__element {
+      font-size: 15px;
+      color: white;
+    }
+  }
+
+  .floating-label {
+    @include floatingLabel();
+  }
+  .fixed-label {
+    @include floatingLabel();
+    @include labelUp();
+  }
+}
+
+.imagine-input[invalid='true'] {
+  outline: 1px solid var(--imagine-danger-color);
+  box-shadow: none;
+}
+
+.imagine-input[readonly='true'] {
+  box-shadow: none;
+}
+
+.outline-primary {
+  outline: 1px solid var(--imagine-primary-color);
+  box-shadow: 0 0 0 0.3rem var(--imagine-input-box-shadow-focus);
+}
+
+.outline-primary[state='invalid'] {
+  box-shadow: none;
+}
+
+.content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  background-color: var(--imagine-background-color);
+  color: var(--imagine-text-color);
+  &--start {
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+  }
+  &--end {
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+  }
+  &--exist {
+    width: 30px;
+  }
 }
 
 .color-danger {
-    color: var(--imagine-danger-color);
+  color: var(--imagine-danger-color);
 }
 
-.label-margin{
-    margin-bottom: var(--imagine-label-distance);;
+.label-margin {
+  margin-bottom: var(--imagine-label-distance);
 }
 
-.error-message{
-    color: var(--imagine-danger-color);
-    font-size: 12px;
-    &--absolute{
-        position: absolute;
-        bottom: -17px;
-    }
+.error-message {
+  color: var(--imagine-danger-color);
+  font-size: 12px;
+  &--absolute {
+    position: absolute;
+    bottom: -17px;
+  }
 }
 
 input::-webkit-calendar-picker-indicator {
-    opacity: 0;
+  opacity: 0;
 }
 
-.autocomplete-variable{
-    position: fixed;
-    width: 120px;
-    background-color:  var(--imagine-background-color);
-    border-radius: 7px;
-    border: 1px solid lightgray;
-    height: auto;
-    max-height: 100px;
-    overflow-y: auto;
-    z-index: 100;
-    &__option{
-        padding: 3px;
-        &:first-child{
-            border-top-right-radius: 7px;
-            border-top-left-radius: 7px;
-        }
-        &:last-child{
-            border-bottom-right-radius: 7px;
-            border-bottom-left-radius: 7px;
-        }
-        cursor: pointer;
-        &:hover{
-            background-color: var(--imagine-background-color-hover);
-        }
+.autocomplete-variable {
+  position: fixed;
+  width: 120px;
+  background-color: var(--imagine-background-color);
+  border-radius: 7px;
+  border: 1px solid lightgray;
+  height: auto;
+  max-height: 100px;
+  overflow-y: auto;
+  z-index: 100;
+  &__option {
+    padding: 3px;
+    &:first-child {
+      border-top-right-radius: 7px;
+      border-top-left-radius: 7px;
     }
+    &:last-child {
+      border-bottom-right-radius: 7px;
+      border-bottom-left-radius: 7px;
+    }
+    cursor: pointer;
+    &:hover {
+      background-color: var(--imagine-background-color-hover);
+    }
+  }
 }
 
-.input-lines{
-    position: absolute;
-    top: 40px;
-    color: white;
-    left: 3px;
-    font-size: 13px;
-    p{
-        line-height: 17px;
-    }
+.input-lines {
+  position: absolute;
+  top: 40px;
+  color: white;
+  left: 3px;
+  font-size: 13px;
+  p {
+    line-height: 17px;
+  }
 }

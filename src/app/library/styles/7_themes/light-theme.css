@@ -6,6 +6,7 @@
   --imagine-primary-low-second-color: #e1ecfa;
   --imagine-light-color: #fff;
   --imagine-dark-color: #000;
+  --imagine-dark-grey-color: #c7c7c7;
   --imagine-grey-color: #ced4da;
   --imagine-light-grey-color: #f7f9fc;
   --imagine-danger-color: #df2e34;
@@ -14,9 +15,24 @@
   --imagine-success-low-color: #eff7f5;
   --imagine-warning-color: #ffb818;
   --imagine-text-color: #495057;
+  --imagine-text-secondary-color: var(--imagine-primary-color);
+  --imagine-light-contrast-color: var(--imagine-light-color);
   --imagine-input-box-shadow-focus: #bfdbfe;
   --imagine-background-color: #ffff;
   --imagine-background-color-secondary: #f8f9fa;
-  --imagine-background-color-hover: #bcbec4;
-  --imagine-border-color: var(--imagine-grey-color);
+  --imagine-background-color-hover: #d7e6fd;
+  --imagine-border-color: #dfe7ef;
+  --imagine-border-secondary-color: #bcbdc1;
+  --dapta-logo: url('/assets/layout/images/logo.png');
+  --register-banner: #f2f2f3;
+  --register-banner-image: url('/assets/register/banner.png');
+  --api-node-border-color: var(--imagine-primary-color);
+  --api-node-title-color: var(--imagine-primary-color);
+  --api-node-placeholder-color: var(--imagine-primary-low-color);
+  --onboarding-first-option: url('/assets/onboarding/first-option.png');
+  --onboarding-first-option-selected: url('/assets/onboarding/first-option-selected.png');
+  --onboarding-second-option: url('/assets/onboarding/second-option.png');
+  --onboarding-second-option-selected: url('/assets/onboarding/second-option-selected.png');
+  --icon-rocket: url('/assets/layout/images/lanzadera.png');
+  --icon-check: url('/assets/layout/images/check.png');
 }

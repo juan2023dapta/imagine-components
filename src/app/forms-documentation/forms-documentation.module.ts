@@ -12,6 +12,7 @@ import { ImagineTooltipModule } from '../library/components/imagine-tooltip/imag
 import { ImagineFormsDocumentationComponent } from './pages/imagine-forms-documentation/imagine-forms-documentation.component';
 import { ImagineDatepickerModule } from '../library/components/imagine-datepicker/imagine-datepicker.module';
 import { ImagineDatePickerDocumentationComponent } from './pages/imagine-date-picker-documentation/imagine-date-picker-documentation.component';
+import { ImaginePopUpDocumentationComponent } from './pages/imagine-pop-up-documentation/imagine-pop-up-documentation.component';
 
 @NgModule({
   declarations: [
@@ -19,6 +20,7 @@ import { ImagineDatePickerDocumentationComponent } from './pages/imagine-date-pi
     ImagineSelectDocumentationComponent,
     ImagineFormsDocumentationComponent,
     ImagineDatePickerDocumentationComponent,
+    ImaginePopUpDocumentationComponent,
   ],
   imports: [
     CommonModule,

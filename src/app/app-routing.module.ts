@@ -6,6 +6,8 @@ const routes: Routes = [
   {
     path: 'docs',
     loadChildren: () => import('./documentation/documentation.module').then((m) => m.DocumentationModule),
+    canActivate: [AuthGuard],
+    canLoad: [AuthGuard],
   },
   {
     path: '',

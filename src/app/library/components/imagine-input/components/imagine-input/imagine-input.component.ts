@@ -64,6 +64,10 @@ export class ImagineInputComponent implements ControlValueAccessor, AfterViewIni
   @Output() focus = new EventEmitter();
   /**Sends parent on blur event */
   @Output() blur = new EventEmitter();
+  /**Sends parent on start content click event */
+  @Output() startContentClick = new EventEmitter();
+  /**Sends parent on end content click event */
+  @Output() endContentClick = new EventEmitter();
 
   /**Sets input background */
   @Input() background = 'light';
@@ -168,7 +172,7 @@ export class ImagineInputComponent implements ControlValueAccessor, AfterViewIni
   /**excluded types */
   excludedTypes = ['number', 'date'];
   /**box types */
-  boxTypes: ImagineInputType[] = ['box', 'variables', 'chip', 'code'];
+  boxTypes: ImagineInputType[] = ['box', 'variables', 'chip'];
   /**box types */
   preventEnterTypes: ImagineInputType[] = ['box', 'variables', 'chip'];
   /**outline class active */
@@ -202,6 +206,7 @@ export class ImagineInputComponent implements ControlValueAccessor, AfterViewIni
     if (this.autoFocus) {
       this.inputElement.nativeElement.focus();
     }
+    this.verifyFormat();
   }
 
   /**
@@ -404,10 +409,6 @@ export class ImagineInputComponent implements ControlValueAccessor, AfterViewIni
     }
     if (this.type === 'title') {
       this.titlecaseFormat(event);
-    }
-    if (this.type === 'code') {
-      this.lastCaretPosition = this.getContentEditableCaretposition();
-      this.codeFormat(event);
     }
     this.lastKeyPressed = this.currentKeyPressed;
     this.value = event.target.value;
@@ -787,6 +788,8 @@ export class ImagineInputComponent implements ControlValueAccessor, AfterViewIni
         ? this.countryCallingCode + ' ' + event.target.value
         : event.target.value;
     }
+    console.log(event.target.value);
+    return event.target.value;
   }
 
   /**
@@ -952,6 +955,9 @@ export class ImagineInputComponent implements ControlValueAccessor, AfterViewIni
     if (this.type === 'mask') {
       this.verifyMask();
     }
+    if (this.type === 'phone') {
+      this.verifyPhone();
+    }
   }
 
   /**
@@ -978,6 +984,12 @@ export class ImagineInputComponent implements ControlValueAccessor, AfterViewIni
    */
   verifyMask() {
     this.value = this.formatMask({ target: { value: this.value } });
+  }
+  /**
+   * Verify Phone if input type is Phone
+   */
+  verifyPhone() {
+    this.value = this.formatPhone({ target: { value: this.value } });
   }
   /**
    * converts date to real date

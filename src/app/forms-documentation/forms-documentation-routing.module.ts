@@ -4,6 +4,7 @@ import { ImagineInputDocumentationComponent } from './pages/imagine-input-docume
 import { ImagineSelectDocumentationComponent } from './pages/imagine-select-documentation/imagine-select-documentation.component';
 import { ImagineFormsDocumentationComponent } from './pages/imagine-forms-documentation/imagine-forms-documentation.component';
 import { ImagineDatePickerDocumentationComponent } from './pages/imagine-date-picker-documentation/imagine-date-picker-documentation.component';
+import { ImaginePopUpDocumentationComponent } from './pages/imagine-pop-up-documentation/imagine-pop-up-documentation.component';
 
 const routes: Routes = [
   {
@@ -21,6 +22,10 @@ const routes: Routes = [
   {
     path: 'date-picker',
     component: ImagineDatePickerDocumentationComponent,
+  },
+  {
+    path: 'pop-up',
+    component: ImaginePopUpDocumentationComponent,
   },
   {
     path: '**',

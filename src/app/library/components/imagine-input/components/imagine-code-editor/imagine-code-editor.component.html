@@ -1,0 +1,20 @@
+<pre #inputElement (input)="onInput(inputTarget)" class="imagine-editor" contenteditable="true" spellcheck="false">
+  <div>&nbsp;</div>
+</pre>
+
+<div
+  #autocompleteContainer
+  *ngIf="autocompleteConfig.show"
+  [ngStyle]="{
+    top: autocompleteConfig.y + 15 + 'px',
+    left: autocompleteConfig.x + 'px',
+    width: autocompleteConfig.width
+  }"
+  class="autocomplete-variable">
+  <div
+    *ngFor="let variable of variablesList"
+    (click)="insertText(variableValueKey ? variable[variableValueKey] : variable)"
+    class="autocomplete-variable__option">
+    {{ variableLabelKey ? variable[variableLabelKey] : variable }}
+  </div>
+</div>

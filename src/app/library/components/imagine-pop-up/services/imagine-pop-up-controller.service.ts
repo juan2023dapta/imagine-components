@@ -1,42 +1,35 @@
 import { ComponentRef, EventEmitter, Injectable } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { ImaginePopUpConfig } from '../interfaces/imagine-pop-up.interfaces';
+import { ImaginePopUpConfig, ImaginePopUpInternalConfig } from '../interfaces/imagine-pop-up.interfaces';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ImaginePopUpController {
+  /**pop up instaces */
+  popUps: ImaginePopUpInternalConfig[] = [];
   /**pop up animation */
-  private animation = '';
-  /**shows pop up */
-  private show = false;
-  /**pop up configuration */
-  private popUpConfiguration!: ImaginePopUpConfig;
+  animation = '';
   /**notifies pop up was closed */
   private closed = new EventEmitter();
   /**component create */
   componentCreated = new EventEmitter();
-  /**flag to hidde pop up */
-  hidde = false;
   /**global props */
   globalProps: any;
-  /**
-   * component ref
-   */
-  componentRef!: ComponentRef<any>;
 
   /**
    * opens pop up
    * @param popUpConfiguration configuration to be used in component
    */
   openPopUp<T>(popUpConfiguration: ImaginePopUpConfig) {
-    return new Promise<ComponentRef<T>>((resolve, reject) => {
-      this.popUpConfiguration = popUpConfiguration;
-      this.animation = 'popUpFadeIn';
-      this.show = true;
-      const componentCreatedSub = this.componentCreated.subscribe(() => {
+    return new Promise<ComponentRef<T>>((resolve) => {
+      const config: ImaginePopUpInternalConfig = { ...popUpConfiguration };
+      config.animation = 'popUpFadeIn';
+      config.showingPopUp = true;
+      this.popUps.push(config);
+      const componentCreatedSub = this.componentCreated.subscribe((componentRef) => {
         componentCreatedSub.unsubscribe();
-        resolve(this.componentRef as ComponentRef<T>);
+        resolve(componentRef as ComponentRef<T>);
       });
     });
   }
@@ -48,9 +41,9 @@ export class ImaginePopUpController {
    */
   closePopUp(data?: any) {
     return new Promise<void>((resolve) => {
-      this.animation = 'popUpFadeOut';
+      this.currentPopup.animation = 'popUpFadeOut';
       setTimeout(() => {
-        this.show = false;
+        this.popUps.pop();
         this.closed.emit(data);
         resolve();
       }, 300);
@@ -71,53 +64,7 @@ export class ImaginePopUpController {
     });
   }
 
-  /**
-   * hiddes pop up to not destroy it
-   * @returns promise
-   */
-  hiddePopUp() {
-    return new Promise<void>((resolve) => {
-      this.animation = 'popUpFadeOut';
-      setTimeout(() => {
-        this.hidde = false;
-        resolve();
-      }, 300);
-    });
-  }
-  /**
-   * unhides pop-up
-   * @returns promise
-   */
-  unHiddePopUp() {
-    return new Promise<void>((resolve) => {
-      this.animation = 'popUpFadeIn';
-      this.hidde = false;
-      resolve();
-    });
-  }
-
-  /**
-   * tells to show pop up to the outside
-   */
-  get showPopUp() {
-    return this.show;
-  }
-  /**
-   * tells to hidde pop up to the outside
-   */
-  get hiddenPopUp() {
-    return this.hidde;
-  }
-  /**
-   * tells pop up animation to the outside
-   */
-  get animationPopUp() {
-    return this.animation;
-  }
-  /**
-   * tells pop up config to the outside
-   */
-  get popUpConfig() {
-    return this.popUpConfiguration;
+  get currentPopup() {
+    return this.popUps[this.popUps.length - 1];
   }
 }

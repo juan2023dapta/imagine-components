@@ -1,34 +1,37 @@
-:root{
-    --imagine-input-height: 40px;
-    --imagine-picker-height: 38px;
-    --imagine-input-font-size: 16px;
-    //label distance from input
-    --imagine-label-distance: 10px;
+:root {
+  --imagine-input-height: 40px;
+  --imagine-picker-height: 38px;
+  --imagine-input-font-size: 16px;
+  //label distance from input
+  --imagine-label-distance: 10px;
 }
 
 $input-primary-color: var(--imagine-primary-color);
 $input-danger-color: var(--imagine-danger-color);
 $input-grey-color: var(--imagine-grey-color);
 
-.material-input{
-    outline: none !important;
-    border-radius: 0px !important;
-    &::after{
-        transition: background-color .2s;
-        position: absolute;
-        background-color: $input-grey-color;
-        width: 100%;
-        height: 2px;
-        content: "";
-        bottom: 0;
-    }
-    &:focus-within::after{
-        background-color: $input-primary-color;
-    }
+.material-input {
+  outline: none !important;
+  border-radius: 0px !important;
+  &.outline-primary {
+    box-shadow: none !important;
+  }
+  &::after {
+    transition: background-color 0.2s;
+    position: absolute;
+    background-color: $input-grey-color;
+    width: 100%;
+    height: 2px;
+    content: '';
+    bottom: 0;
+  }
+  &:focus-within::after {
+    background-color: $input-primary-color;
+  }
 }
 
-.material-input[state="invalid"]{
-    &::after{
-        background-color: $input-danger-color;
-    }
+.material-input[state='invalid'] {
+  &::after {
+    background-color: $input-danger-color;
+  }
 }

@@ -1,15 +1,15 @@
-<div class="container" [ngStyle]="popUpController.popUpConfig.containerStyles">
-  <div
-    [hidden]="popUpController.hiddenPopUp"
-    [class]="'imagine-popup ' + popUpController.animationPopUp"
-    [ngStyle]="popUpController.popUpConfig.styles">
+<div class="container" [ngStyle]="popUpConfiguration.containerStyles">
+  <div [class]="'imagine-popup ' + animationPopUp" [ngStyle]="popUpConfiguration.styles">
     <div
-      *ngIf="popUpController.popUpConfig.component"
+      *ngIf="popUpConfiguration.component"
       ImaginePopUpDynamicHost
-      [dynamicComponent]="popUpController.popUpConfig.component"></div>
+      [dynamicComponent]="popUpConfiguration.component"></div>
     <div
-      *ngIf="popUpController.popUpConfig.templateRef"
+      *ngIf="popUpConfiguration.templateRef"
       ImaginePopUpDynamicHost
-      [dynamicTemplate]="popUpController.popUpConfig.templateRef"></div>
+      [dynamicTemplate]="popUpConfiguration.templateRef"></div>
+    <ng-container *ngIf="!popUpConfiguration.component && !popUpConfiguration.templateRef && wrapper">
+      <ng-content></ng-content>
+    </ng-container>
   </div>
 </div>
